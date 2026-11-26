@@ -1,9 +1,10 @@
 # Project memory
 
-Begin with the [constitution](../CONSTITUTION.md), [founder amendments](../CONSTITUTION-AMENDMENTS.md), and [player and development guide](../README.md).
+The current playable line is v0.5.0. Begin with the [constitution](../CONSTITUTION.md), [founder amendments](../CONSTITUTION-AMENDMENTS.md), and [player and development guide](../README.md).
 
 | Record | Use |
 | --- | --- |
+| [Extended evolution session](evolution-2026-11-26.md) | Cycle decisions, evidence, tools, and release findings for v0.5.0 |
 | [Exploratory playtest method](playtest-method.md) | How to experience a build through ordinary input and replay decisive moments |
 | [26 November 2026 self-playtest](playtest-2026-11-26.md) | Baseline observations and the v0.2.0 revision |
 | [Inland clearance and keyboard look](inland-clearance.md) | Latest visual experiment, keyboard interaction, and fresh-checkout evidence |

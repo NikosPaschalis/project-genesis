@@ -38,6 +38,12 @@ CHROMIUM_PATH=/path/to/chromium npm run test:east-bank
 
 The world checks exercise traversal, geometry, sound parameters, and journal visibility without a browser. The browser suites start their own local servers. The first exercises the original route, keyboard and touch input, and journal persistence. The east-bank replay crosses in both directions and checks the expanded journal with an older save. Set `GENESIS_CAPTURE_DIR` to save browser frames.
 
+## 0.5.0
+
+The Quiet Reach has a second way across the basin and a trail along the far shore. A new landmark is visible from the descent, and close observation there can change what you see. The journal follows your own route and can bring related observations together. Ambient sound is still optional.
+
+Existing journal entries carry forward. Play requires WebGL 2. Some scenery can be walked through, and rendering speed varies by device.
+
 ## 0.4.0
 
 The inland route is easier to follow through the standing stones. Page Up and Page Down let keyboard players look vertically, and the Examine prompt responds to vertical aim. Existing journal entries remain available.
