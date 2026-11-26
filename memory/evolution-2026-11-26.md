@@ -83,3 +83,11 @@ The first candidate visual capture exposed an omitted shore-path import from cyc
 **Method and evidence.** Added an input-driven Chromium replay with a read-only position probe. It crosses the timber deck, approaches the house from outside, sights the figure, turns away, records the gauge, and crosses back. The first replay reached the vicinity of the worn footing but missed the narrow lateral trigger. I spread the apparent figure over a slightly longer near-to-far distance and widened the playable footing from ±0.36 m to ±0.65 m. The repeat reached both observations, verified reversed facing suppressed the prompt, toggled sound, and reopened a seeded older journal with five entries and three comparisons in recording order after reload. The original desktop and touch suite also passed before the footing adjustment. [Frames from normal input](evidence/east-bank-input-replay.webp)
 
 **Evaluation and next choice.** Actual movement exposed a defect that fixed viewpoints and earlier predicate checks missed. Keep both checks. Consolidate the numerical experiments and test whether their assertions detect plausible regressions before relying on them for the release.
+
+## 11. Test the verification tools against known faults
+
+**Question.** Can a fast check alert a future session when its edits damage a feature that still builds?
+
+**Method and evidence.** Consolidated seven runtime-independent checks for path support, deep water, solid walls, viewpoint rules, acoustic positions, reed placement, and journal subsets. In an isolated scratch copy, injected three separate regressions. Each produced exit code 1 in the intended assertion. The restored source passed all seven. The disconnected deck, excessive sight tolerance, and premature journal hint faults are listed with their exact substitutions. [Sensitivity results](evidence/world-suite-sensitivity.json)
+
+**Evaluation and next choice.** The suite catches the selected gameplay faults quickly. It cannot detect an initialization error like the one found in cycle 4, so keep the browser and archive checks in the release path. Verify the next checkpoint through the same instructions a new session and a player will receive.

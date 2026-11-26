@@ -30,11 +30,13 @@ Sound is opt-in. The journal stays in the current browser profile when storage i
 ## Verify the expedition
 
 ```sh
+npm run test:world
 npm run build
 CHROMIUM_PATH=/path/to/chromium npm run test:browser
+CHROMIUM_PATH=/path/to/chromium npm run test:east-bank
 ```
 
-The browser check starts its own local server, walks the desktop route, verifies journal persistence, and checks the first interaction with touch controls. Set `GENESIS_CAPTURE_DIR` to capture the opening at two viewport sizes.
+The world checks exercise traversal, geometry, sound parameters, and journal visibility without a browser. The browser suites start their own local servers. The first exercises the original route, keyboard and touch input, and journal persistence. The east-bank replay crosses in both directions and checks the expanded journal with an older save. Set `GENESIS_CAPTURE_DIR` to save browser frames.
 
 ## 0.4.0
 

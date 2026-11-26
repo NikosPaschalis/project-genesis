@@ -1,0 +1,29 @@
+{
+  "control": "7 passing tests with restored source",
+  "cases": [
+    {
+      "case": "deck disconnected",
+      "file": "geography.js",
+      "original": "!onDeck(x, z) && ground",
+      "altered": "ground",
+      "detectedBy": "the deck supports movement while deep water blocks either side",
+      "exitCode": 1
+    },
+    {
+      "case": "sight accepts lateral poses",
+      "file": "observations.js",
+      "original": "Math.abs(position.z - sightline.z) < 0.65",
+      "altered": "Math.abs(position.z - sightline.z) < 1.2",
+      "detectedBy": "the view observation requires both location and facing",
+      "exitCode": 1
+    },
+    {
+      "case": "journal shows unseen comparisons",
+      "file": "field-journal.js",
+      "original": "ids.every(id => recorded.has(id))",
+      "altered": "ids.length > 0",
+      "detectedBy": "all discovery subsets preserve recorded order and reveal only known comparisons",
+      "exitCode": 1
+    }
+  ]
+}
