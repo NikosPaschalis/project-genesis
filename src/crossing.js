@@ -23,11 +23,13 @@ export function makeCrossing(scene) {
   }
   scene.add(planks);
 
+  const batches = new Map();
   function beam(x, y, atZ, sx, sy, sz, material) {
-    const mesh = new THREE.Mesh(box, material);
+    const mesh = new THREE.Object3D();
     mesh.position.set(x, y, atZ);
     mesh.scale.set(sx, sy, sz);
-    scene.add(mesh);
+    if (!batches.has(material)) batches.set(material, []);
+    batches.get(material).push(mesh);
     return mesh;
   }
 
@@ -49,5 +51,13 @@ export function makeCrossing(scene) {
       const rail = beam(x + 1.55, (a + b) / 2 + 0.70, atZ, Math.hypot(3.1, b - a), 0.11, 0.13, edgeWood);
       rail.rotation.z = Math.atan2(b - a, 3.1);
     }
+  }
+  for (const [material, blocks] of batches) {
+    const mesh = new THREE.InstancedMesh(box, material, blocks.length);
+    for (const [i, block] of blocks.entries()) {
+      block.updateMatrix();
+      mesh.setMatrixAt(i, block.matrix);
+    }
+    scene.add(mesh);
   }
 }

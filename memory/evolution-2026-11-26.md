@@ -59,3 +59,11 @@ The first candidate visual capture exposed an omitted shore-path import from cyc
 **Method and evidence.** Seeded reed colonies by water-relative height and let taller leaf tips respond to wind. The deterministic generator produced 34 tufts and 374 stems. Tuft anchors sit 0.106–0.310 m above the water plane and outside both ends of the crossing. Independently filtered the grass and large rocks that grew into the Measure House aisle. Before-and-after rendered views show the localized reed line and the cleared paving. The reduced-motion browser capture rendered the shader without console errors. [Shoreline comparison and cleared aisle](evidence/reed-beds-and-aisle.webp)
 
 **Evaluation and next choice.** The new reed line reads as a distinct littoral band. The isolated tree at the bend still fills much of the near frame and is worth testing with players before adjusting it. The house and bridge add many repeated meshes, so measure rendering cost before further expansion.
+
+## 8. Measure and reduce rendering submission
+
+**Question.** Can the new geometry and existing foliage share the frame more economically while retaining the same authored world?
+
+**Method and evidence.** Batched the house and bridge meshes by material and divided the existing grass into 18 m patches for frustum culling. Captured renderer counters from identical 880×550, reduced-motion poses on the pre-batch checkout and the candidate. Across six poses, draw calls fell from 863 to 441 and submitted triangles from 637,944 to 434,488. Every measured pose decreased on both counters. The southern view improved least on calls because it looks through many grass patches. These are work-submission counters, with no measured frame-time or hardware-performance claim. [Per-pose data](evidence/east-bank-renderer.json)
+
+**Evaluation and next choice.** The counters support keeping the batches. The new world now provides evidence that can be encountered in either order, yet the previous journal imitates a fixed tour. Make its records reflect the player's own itinerary and let previously seen objects be compared without exposing unseen ones.

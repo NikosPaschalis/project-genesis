@@ -9,11 +9,13 @@ export function makeMeasureHouse(scene) {
   const box = new THREE.BoxGeometry();
   const { z, walls } = measureHouse;
 
+  const batches = new Map();
   function block(x, y, atZ, sx, sy, sz, material = masonry[1]) {
-    const mesh = new THREE.Mesh(box, material);
+    const mesh = new THREE.Object3D();
     mesh.position.set(x, y, atZ);
     mesh.scale.set(sx, sy, sz);
-    scene.add(mesh);
+    if (!batches.has(material)) batches.set(material, []);
+    batches.get(material).push(mesh);
     return mesh;
   }
 
@@ -77,4 +79,12 @@ export function makeMeasureHouse(scene) {
       0.34 + i * 0.039, 0.018, 0.025, masonry[0]);
   }
   block(gauge.x + 0.19, base + 1.35, gauge.z - 0.35, 0.20, 0.044, 0.025, mineral);
+  for (const [material, blocks] of batches) {
+    const mesh = new THREE.InstancedMesh(box, material, blocks.length);
+    for (const [i, block] of blocks.entries()) {
+      block.updateMatrix();
+      mesh.setMatrixAt(i, block.matrix);
+    }
+    scene.add(mesh);
+  }
 }

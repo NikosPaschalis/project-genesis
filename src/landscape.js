@@ -238,9 +238,17 @@ function makePlants(scene) {
     const tuft = 0.6 + random() * 0.7;
     grass.push({ x, y: y - 0.09, z, sx: tuft * 0.35, sy: tuft * (0.18 + random() * 0.69), sz: tuft * 0.54, rotation: random() * 6.28, color: pick(greens) });
   }
-  instancer(scene, blade, new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 1 }),
-    grass.filter(({ x, z, sy }) => !houseAisle(x, z, 1.75) &&
-      (Math.min(spurDistance(x, z), reedStairDistance(x, z)) > 1.25 || sy < 0.29)));
+  const grassMaterial = new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 1 });
+  const grassPatches = new Map();
+  for (const tuft of grass) {
+    const { x, z, sy } = tuft;
+    if (houseAisle(x, z, 1.75)) continue;
+    if (sy >= 0.29 && Math.min(spurDistance(x, z), reedStairDistance(x, z)) <= 1.25) continue;
+    const tile = `${Math.floor(x / 18)},${Math.floor(z / 18)}`;
+    if (!grassPatches.has(tile)) grassPatches.set(tile, []);
+    grassPatches.get(tile).push(tuft);
+  }
+  for (const patch of grassPatches.values()) instancer(scene, blade, grassMaterial, patch);
 
   const rocks = [];
   const rockColors = ['#66716c', '#555f62', '#aba18b', '#7e8776', '#3e5355'].map((color) => new THREE.Color(color));

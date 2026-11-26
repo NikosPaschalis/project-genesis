@@ -1,0 +1,67 @@
+{
+  "viewports": "880x550",
+  "renderer": "Chromium SwiftShader",
+  "beforeCommit": "9ddae11",
+  "before": {
+    "crown-descent": {
+      "calls": 185,
+      "triangles": 106591
+    },
+    "reed-bend": {
+      "calls": 123,
+      "triangles": 105807
+    },
+    "measure-approach": {
+      "calls": 104,
+      "triangles": 104859
+    },
+    "measure-aisle": {
+      "calls": 69,
+      "triangles": 105131
+    },
+    "crossing-west": {
+      "calls": 170,
+      "triangles": 107087
+    },
+    "southern-lookback": {
+      "calls": 212,
+      "triangles": 108569
+    }
+  },
+  "after": {
+    "crown-descent": {
+      "calls": 74,
+      "triangles": 80284
+    },
+    "reed-bend": {
+      "calls": 55,
+      "triangles": 70065
+    },
+    "measure-approach": {
+      "calls": 38,
+      "triangles": 64683
+    },
+    "measure-aisle": {
+      "calls": 33,
+      "triangles": 60836
+    },
+    "crossing-west": {
+      "calls": 54,
+      "triangles": 74150
+    },
+    "southern-lookback": {
+      "calls": 187,
+      "triangles": 84470
+    }
+  },
+  "totals": {
+    "before": {
+      "calls": 863,
+      "triangles": 638044
+    },
+    "after": {
+      "calls": 441,
+      "triangles": 434488
+    }
+  }
+}

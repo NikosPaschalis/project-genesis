@@ -1,10 +1,10 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { createServer } from 'vite';
 
-const [source, output, routeName] = process.argv.slice(2);
-if (!source || !output) throw new Error('Usage: node tools/capture-views.mjs <checkout> <output directory>');
+const [source, output, routeName, mode] = process.argv.slice(2);
+if (!source || !output) throw new Error('Usage: node tools/capture-views.mjs <checkout> <output directory> [east|sight] [stats]');
 const eastViews = [
   { name: 'crown-descent', x: 35.5, z: -42, yaw: 2.86, pitch: -0.14 },
   { name: 'reed-bend', x: 25, z: -24, yaw: 2.86, pitch: -0.12 },
@@ -49,6 +49,10 @@ try {
       yaw = heading;
       pitch = tilt;
       document.getElementById('message').textContent = '';
+    };
+    window.captureStats = () => {
+      const { calls, triangles } = renderer.info.render;
+      return { calls, triangles };
     };`;
     await route.fulfill({ response, body: (await response.text()) + '\n' + capture });
   });
@@ -58,13 +62,16 @@ try {
   if (!(await enter.isVisible()) && errors.length) throw new Error(errors.join('\n'));
   await enter.click();
   await page.evaluate(() => document.fonts.ready.then(() => true));
+  const stats = {};
   for (const view of views) {
     await page.evaluate(pose => window.captureView(pose), view);
     await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-    await page.screenshot({ path: join(output, `${view.name}.png`) });
+    stats[view.name] = await page.evaluate(() => window.captureStats());
+    if (mode !== 'stats') await page.screenshot({ path: join(output, `${view.name}.png`) });
   }
   if (errors.length) throw new Error(errors.join('\n'));
-  console.log(`Captured ${views.length} fixed views from ${source}`);
+  await writeFile(join(output, 'renderer.json'), JSON.stringify(stats, null, 2) + '\n');
+  console.log(`Measured ${views.length} fixed views from ${source}`);
 } finally {
   await browser?.close();
   await server.close();
