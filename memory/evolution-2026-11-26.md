@@ -43,3 +43,11 @@ The first candidate visual capture exposed an omitted shore-path import from cyc
 **Method and evidence.** Three pieces of a brass figure sit at different depths along the aisle. Their radius and height scale with distance from a worn footing so that the pieces share a projected center there. Recorded the same westward view from the footing and 1.15 m to one side. The first reads as one shape with seams and the second as several separate shapes. The target rule passed the intended center and a wrapped yaw at both field-of-view values. It rejected five off-axis, reverse-facing or steeply tilted poses at each value. [Matched rendered views](evidence/measure-alignment.webp)
 
 **Evaluation and next choice.** The visible shape provides a payoff before the note. The axial pose should still be tested with actual movement, including overshoot at low frame rates. Add an optional acoustic cue inside the house that changes with position and turn, so the place has another scale of attention.
+
+## 6. Give the path an acoustic gradient
+
+**Question.** Can careful listening distinguish passage over open water from time spent among the stone bays?
+
+**Method and evidence.** Extended the opt-in Web Audio graph. Wind brightens over the crossing. In the ruin it dulls and gives way to a softly varying three-part tone, panned from the middle bay. The same physical locations used for construction determine the transitions. Six numerical poses established 330 Hz wind center at the overlook, 510 Hz on the crossing and 230 Hz in the center bay. Resonance is zero at the overlook and outside the house, and unit strength at the center. A half-turn at the same approach position flipped pan from +1 to −1 at unchanged gain. These are synthesis parameters. Perceived level and quality require listening judgment.
+
+**Evaluation and next choice.** Sound is optional and the visual observation remains sufficient. The image comparisons exposed a different issue: grass crosses flooring and a boulder intrudes into an aisle. Control vegetation around architecture and give the waterline a distinct ecology.

@@ -184,6 +184,7 @@ function draw(now) {
     camera.rotation.set(spawn.pitch, openingYaw, 0, 'YXZ');
   }
   animate(elapsed, camera.position);
+  if (soundOn) playAudio.listen(camera.position.x, camera.position.z, yaw);
   renderer.render(scene, camera);
 }
 
@@ -236,7 +237,8 @@ get('sound').addEventListener('click', async () => {
   button.disabled = true;
   try {
     playAudio ??= ambience();
-    await playAudio(!soundOn);
+    playAudio.listen(camera.position.x, camera.position.z, yaw);
+    await playAudio.enable(!soundOn);
     soundOn = !soundOn;
     button.setAttribute('aria-pressed', String(soundOn));
     button.setAttribute('aria-label', soundOn ? 'Mute ambient sound' : 'Enable ambient sound');
