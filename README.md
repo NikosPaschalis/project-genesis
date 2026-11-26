@@ -38,4 +38,4 @@ The browser check starts its own local server, walks the desktop route, verifies
 
 First playable release. It includes a low-poly basin, a single-player route with three inspectable sites, a local field journal, and optional ambient sound. This build supports walking along the terrain. Scenery meshes such as trees and ruin blocks can be walked through. Device performance varies with WebGL support and available graphics acceleration.
 
-Read [the constitution](CONSTITUTION.md) for the founding request and [the memory index](memory/index.md) for project continuity and evidence.
+Read [the constitution](CONSTITUTION.md) and [founder amendments](CONSTITUTION-AMENDMENTS.md) for the governing principles. Read [the memory index](memory/index.md) for project continuity and evidence.
