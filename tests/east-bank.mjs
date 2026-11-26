@@ -103,7 +103,13 @@ try {
   await travel(44.7, -2.5);
   await travel(44.7, -10.2, { close: 0.16, fast: false });
   await look(Math.PI / 2, 0.04);
-  console.log('Reached sighting pose', await pose());
+  const mark = page.getByRole('button', { name: /Joined Mark/ });
+  // A single movement hold can overshoot at low refresh rates. Recenter in controlled steps.
+  for (let correction = 0; correction < 8 && !(await mark.isVisible()); correction++) {
+    const current = await pose();
+    await page.keyboard.press(current.z < -10.2 ? 'KeyA' : 'KeyD', { delay: 55 });
+  }
+  assert.ok(await mark.isVisible(), `Unable to line up from ${JSON.stringify(await pose())}`);
   await capture('sighting');
   await examine('Mark');
 
