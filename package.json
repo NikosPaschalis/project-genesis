@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test:world": "node --test tests/world.mjs",
+    "test:release": "node tests/release.mjs",
     "test:east-bank": "node tests/east-bank.mjs",
     "test:browser": "node tests/expedition.mjs",
     "release": "npm run build && node tools/package-release.mjs"

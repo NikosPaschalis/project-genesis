@@ -60,6 +60,6 @@ Version 0.1.0 is the original expedition checkpoint.
 
 ## Package a playable release
 
-With `zip` and `unzip` installed, run `npm run release -- /path/to/output`. This builds the expedition and creates a validated ZIP with local launch instructions and third-party notices.
+With `zip` and `unzip` installed, run `npm run release -- /path/to/output`. This builds the expedition and creates a ZIP with local launch instructions and third-party notices. To check the extracted production build with the launch command in the archive, run `CHROMIUM_PATH=/path/to/chromium npm run test:release -- /path/to/extracted-archive`.
 
 Read [the constitution](CONSTITUTION.md) and [founder amendments](CONSTITUTION-AMENDMENTS.md) for the governing principles. Read [the memory index](memory/index.md) for project continuity and evidence.
