@@ -5,7 +5,7 @@ export function findObservation(position, yaw, pitch, fieldOfView) {
   return discoveries.find((site) => {
     if (site.id === 'seam') {
       return Math.abs(position.x - sightline.x) < 0.96 &&
-        Math.abs(position.z - sightline.z) < 0.36 &&
+        Math.abs(position.z - sightline.z) < 0.65 &&
         Math.abs(pitch - Math.atan(sightline.rise)) < 0.24 &&
         Math.cos(yaw - Math.PI / 2) > Math.cos(0.29);
     }

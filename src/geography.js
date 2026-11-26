@@ -4,7 +4,7 @@ export const spawn = { x: -18, z: 34, yaw: -0.17, pitch: -0.07 };
 export const waterline = -0.55;
 export const sightline = {
   x: 44.7, z: -10.2, rise: 0.037, radius: 0.076,
-  layers: [39.5, 34, 27.5],
+  layers: [38.2, 34, 27.5],
 };
 
 export const discoveries = [

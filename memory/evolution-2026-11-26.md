@@ -75,3 +75,11 @@ The first candidate visual capture exposed an omitted shore-path import from cyc
 **Method and evidence.** Entries now follow the order in which they were recorded. Three marginal comparisons become available only after both cited observations are present. The old saved ID array and its storage key still work. Enumerated all 64 subsets of the six observations with a stale ID included. Entry order was preserved, each comparison referenced only known IDs, and the original four-entry result opened without a marginal comparison.
 
 **Evaluation and next choice.** The journal now supports looking back over a player-chosen route. Numerical predicates and rendered stills have covered separate pieces, so the next cycle needs a repeatable input-driven run connecting the crossing, the sighting, and the journal through reload.
+
+## 10. Replay the new route and fix footing tolerance
+
+**Question.** Can an explorer cross both ways and record the new observations through the controls players actually use?
+
+**Method and evidence.** Added an input-driven Chromium replay with a read-only position probe. It crosses the timber deck, approaches the house from outside, sights the figure, turns away, records the gauge, and crosses back. The first replay reached the vicinity of the worn footing but missed the narrow lateral trigger. I spread the apparent figure over a slightly longer near-to-far distance and widened the playable footing from ±0.36 m to ±0.65 m. The repeat reached both observations, verified reversed facing suppressed the prompt, toggled sound, and reopened a seeded older journal with five entries and three comparisons in recording order after reload. The original desktop and touch suite also passed before the footing adjustment. [Frames from normal input](evidence/east-bank-input-replay.webp)
+
+**Evaluation and next choice.** Actual movement exposed a defect that fixed viewpoints and earlier predicate checks missed. Keep both checks. Consolidate the numerical experiments and test whether their assertions detect plausible regressions before relying on them for the release.
