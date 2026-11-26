@@ -34,9 +34,13 @@ CHROMIUM_PATH=/path/to/chromium npm run test:browser
 
 The browser check starts its own local server, walks the desktop route, verifies journal persistence, and checks the first interaction with touch controls. Set `GENESIS_CAPTURE_DIR` to capture the opening at two viewport sizes.
 
+## 0.3.0
+
+The basin now has a short inland route that splits off from the shore and rejoins at the headland. It adds a change in elevation, a new view across the water, and an optional field observation. The original shore route remains available. Observation props block movement. Other scenery, including trees and larger ruins, can still be walked through. Device performance varies with WebGL support and graphics acceleration.
+
 ## 0.2.0
 
-Field observations now appear alongside the landscape, with the full journal available separately. Look toward a nearby trace to examine it. The revision replaces floating markers with details on the objects themselves and adds physical cues along the shore. The three observation props block movement. Other scenery, including trees and larger ruins, can still be walked through. Device performance varies with WebGL support and graphics acceleration.
+Field observations first appeared alongside the landscape, with the full journal available separately. Look toward a nearby trace to examine it. The revision replaces floating markers with details on the objects themselves and adds physical cues along the shore. The three original observation props gained collision.
 
 Version 0.1.0 is the original expedition checkpoint.
 

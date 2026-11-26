@@ -16,6 +16,10 @@ export const discoveries = [
     id: 'crown', name: 'The Listening Crown', x: 36, z: -48, footprint: 0.56,
     note: 'The stone holds the day’s warmth. Pressing a palm to it, you feel three pulses and a silence long enough to mistake for an answer.',
   },
+  {
+    id: 'silt-gate', name: 'The Silt Gate', x: -28.2, z: -38.5, footprint: 1.3,
+    note: 'Three bands of silt cross the stone at a slant, each rising toward the hill. The water would have had to climb to leave them that way.',
+  },
 ];
 
 function generator(seed) {
@@ -35,6 +39,22 @@ function trailDistance(x, z) {
   return Math.abs(z + 55 + 2 * Math.sin((x + 13) * 0.11));
 }
 
+const spur = [[-19.5, -27], [-23.4, -32], [-26.2, -38.5], [-25.7, -45.5], [-18.4, -53.5]];
+
+function spurDistance(x, z) {
+  if (x < -31 || x > -16 || z < -57 || z > -24) return Infinity;
+  let distance = Infinity;
+  for (let i = 1; i < spur.length; i++) {
+    const [ax, az] = spur[i - 1];
+    const [bx, bz] = spur[i];
+    const dx = bx - ax;
+    const dz = bz - az;
+    const t = THREE.MathUtils.clamp(((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz), 0, 1);
+    distance = Math.min(distance, Math.hypot(x - ax - dx * t, z - az - dz * t));
+  }
+  return distance;
+}
+
 export function ground(x, z) {
   const bank = smooth(Math.abs(x - river(z)), 7.5, 22);
   const channel = 1 - smooth(z, -57, -42);
@@ -42,7 +62,8 @@ export function ground(x, z) {
   const rolls = 0.56 * Math.sin(x * 0.19 + z * 0.11) + 0.35 * Math.cos(z * 0.23 - x * 0.08);
   const overlook = 3.6 * smooth(z, 12, 44) * (1 - smooth(x, -18, -4));
   const mound = 3.8 * Math.exp(-((x - 37) ** 2 / 150 + (z + 51) ** 2 / 195));
-  return -2.4 + Math.max(bank, channel) * (3.8 + rolls) + overlook + embankment * 22 + mound;
+  const shelf = 2.9 * (1 - smooth(Math.hypot((x + 34) / 10, (z + 42) / 15), 0.1, 1.6));
+  return -2.4 + Math.max(bank, channel) * (3.8 + rolls) + overlook + embankment * 22 + mound + shelf;
 }
 
 const sky = new THREE.Color('#91aaa8');
@@ -112,6 +133,7 @@ function makeTerrain(scene) {
   const grass = new THREE.Color('#536650');
   const sand = new THREE.Color('#9d8e6f');
   const trail = new THREE.Color('#a69b76');
+  const gravel = new THREE.Color('#b0a18b');
   for (let i = 0; i < points.count; i += 3) {
     const x = (points.getX(i) + points.getX(i + 1) + points.getX(i + 2)) / 3;
     const z = (points.getZ(i) + points.getZ(i + 1) + points.getZ(i + 2)) / 3;
@@ -119,6 +141,7 @@ function makeTerrain(scene) {
     const color = grass.clone().lerp(loam, 0.5 + 0.5 * Math.sin(x * 0.15 + z * 0.15));
     color.lerp(sand, 1 - smooth(y, -0.6, 1.5));
     color.lerp(trail, (1 - smooth(trailDistance(x, z), 0.8, 3.0)) * 0.82);
+    color.lerp(gravel, (1 - smooth(spurDistance(x, z), 0.65, 2.6)) * 0.77);
     color.multiplyScalar(0.85 + random() * 0.29);
     for (let j = 0; j < 3; j++) colors.push(color.r, color.g, color.b);
   }
@@ -264,7 +287,8 @@ function makePlants(scene) {
     const tuft = 0.6 + random() * 0.7;
     grass.push({ x, y: y - 0.09, z, sx: tuft * 0.35, sy: tuft * (0.18 + random() * 0.69), sz: tuft * 0.54, rotation: random() * 6.28, color: pick(greens) });
   }
-  instancer(scene, blade, new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 1 }), grass);
+  instancer(scene, blade, new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 1 }),
+    grass.filter(({ x, z, sy }) => spurDistance(x, z) > 1.25 || sy < 0.29));
 
   const rocks = [];
   const rockColors = ['#66716c', '#555f62', '#aba18b', '#7e8776', '#3e5355'].map((color) => new THREE.Color(color));
@@ -276,7 +300,7 @@ function makePlants(scene) {
     const size = 0.1 + Math.pow(random(), 4) * 2.7;
     rocks.push({ x, y, z, sx: size * 1.3, sy: size * (0.35 + random() * 0.65), sz: size, rotation: random() * 6, color: pick(rockColors) });
   }
-  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks);
+  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z }) => spurDistance(x, z) > 2.1));
 
   const trunks = [];
   const needles = [];
@@ -423,6 +447,27 @@ function makeRuins(scene) {
     object(shard, stone[2], x, y + 0.18, z, 0.59, 0.45, 0.55, 0.52);
     object(shard, stone[4], x - 0.05, y + 0.61, z, 0.38, 0.26, 0.34, 0.85);
     object(shard, stone[1], x + 0.01, y + 0.83, z, 0.24, 0.21, 0.22, 0.32);
+  }
+
+  // The broken opening stands across the old drainage bed, with room to pass beside it.
+  const siltGate = discoveries.find(({ id }) => id === 'silt-gate');
+  const gateY = ground(siltGate.x, siltGate.z);
+  const basalt = new THREE.MeshStandardMaterial({ color: '#484f50', roughness: 0.94, flatShading: true });
+  object(pillar, basalt, siltGate.x, gateY + 1.96, siltGate.z, 1.05, 4.65, 0.78, 0.23, -0.19);
+  object(pillar, stone[0], -24.45, ground(-24.45, -40.45) + 1.52, -40.45, 0.83, 3.8, 0.67, -0.35, 0.19);
+  object(shard, basalt, -27.1, gateY + 0.14, -42.2, 1.38, 0.62, 0.87, 0.72, -0.13);
+  object(shard, stone[1], -29.15, gateY + 0.42, -40.2, 1.31, 0.83, 1.1, 0.52);
+  for (let i = 0; i < 3; i++) {
+    object(box, stone[2], siltGate.x + 0.42 + i * 0.057, gateY + 0.89 + i * 0.32, siltGate.z + 0.57,
+      0.85 - i * 0.15, 0.045, 0.025, 0.23, -0.19);
+  }
+  // Rounded stones show the direction of the dry channel on either approach.
+  for (const [x, z, size] of [
+    [-25.0, -33.4, 0.42], [-26.0, -34.8, 0.32], [-27.3, -36.5, 0.53],
+    [-27.6, -44.2, 0.55], [-26.5, -46.5, 0.38], [-24.2, -48.6, 0.45],
+    [-22.0, -51.0, 0.32],
+  ]) {
+    object(shard, stone[2], x, ground(x, z) + size * 0.12, z, size, size * 0.43, size * 0.67, x);
   }
 
   // Silhouettes lead the eye between the overlook and the far side of the basin.

@@ -98,11 +98,23 @@ try {
 
   await walk('KeyD', () => document.querySelector('#message').textContent.includes('too deep'));
   await walk('KeyA', (x) => window.positionForSmokeTest.x < x, -18);
+  await walk('KeyW', (z) => window.positionForSmokeTest.z < z, -37);
+  await lookBy(-187);
+  await lookBy(-187);
+  await walk('KeyW', () => !document.querySelector('#inspect').hidden && document.querySelector('#inspect span').textContent.includes('Silt Gate'));
+  if (process.env.GENESIS_CAPTURE_DIR) {
+    await mkdir(process.env.GENESIS_CAPTURE_DIR, { recursive: true });
+    await desktop.screenshot({ path: join(process.env.GENESIS_CAPTURE_DIR, 'inland-spur.png') });
+  }
+  await recordObservation(3);
+  await lookBy(187);
+  await lookBy(187);
+  await walk('KeyD', (x) => window.positionForSmokeTest.x > x, -18);
   await walk('KeyW', (z) => window.positionForSmokeTest.z < z, -58);
   await walk('KeyD', (x) => window.positionForSmokeTest.x > x, 35.2);
   for (let quarter = 0; quarter < 4; quarter++) await lookBy(187);
   await walk('KeyW', () => !document.querySelector('#inspect').hidden && document.querySelector('#inspect span').textContent.includes('Crown'));
-  await recordObservation(3);
+  await recordObservation(4);
 
   await desktop.keyboard.press('KeyJ');
   await desktop.getByRole('button', { name: 'Return to overlook' }).click();
@@ -110,7 +122,7 @@ try {
   await desktop.reload();
   await desktop.getByRole('button', { name: 'Enter the Reach' }).click();
   await desktop.getByRole('button', { name: 'Journal', exact: true }).click();
-  assert.equal(await desktop.locator('#entries li').count(), 3);
+  assert.equal(await desktop.locator('#entries li').count(), 4);
   assert.deepEqual(errors, []);
   await desktop.close();
   console.log('Desktop passed: facing, site collision, in-world observations, pond boundary, all sites and journal persistence.');
