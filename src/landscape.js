@@ -1,26 +1,6 @@
 import * as THREE from 'three';
 
-export const spawn = { x: -18, z: 34, yaw: -0.17, pitch: -0.07 };
-export const waterline = -0.55;
-
-export const discoveries = [
-  {
-    id: 'threshold', name: 'The Leaning Stone', x: -18, z: 22, footprint: 0.98, targetHeight: 1.38,
-    note: 'Three grooves turn toward the basin. Rain has softened two of them. The third still looks freshly cut.',
-  },
-  {
-    id: 'landing', name: 'The Boatless Landing', x: -20.5, z: -21, footprint: 0.51, targetHeight: 0.86,
-    note: 'A mooring ring is polished on its landward edge. Someone used to tie something here, on the wrong side of the water.',
-  },
-  {
-    id: 'crown', name: 'The Listening Crown', x: 36, z: -48, footprint: 0.56, targetHeight: 0.86,
-    note: 'The stone holds the day’s warmth. Pressing a palm to it, you feel three pulses and a silence long enough to mistake for an answer.',
-  },
-  {
-    id: 'silt-gate', name: 'The Silt Gate', x: -28.2, z: -38.5, footprint: 1.3, targetHeight: 1.44,
-    note: 'Three bands of silt cross the stone at a slant, each rising toward the hill. The water would have had to climb to leave them that way.',
-  },
-];
+import { discoveries, ground, spurDistance, trailDistance, waterline } from './geography.js';
 
 function generator(seed) {
   return () => {
@@ -30,41 +10,6 @@ function generator(seed) {
 }
 
 const smooth = THREE.MathUtils.smoothstep;
-const river = (z) => 5 + Math.sin(z * 0.046 - 0.4) * 9;
-const path = (z) => -18 + 2.4 * Math.sin((z - 20) * 0.077);
-
-function trailDistance(x, z) {
-  if (z > -51) return Math.abs(x - path(z));
-  if (x < -20 || x > 35) return Infinity;
-  return Math.abs(z + 55 + 2 * Math.sin((x + 13) * 0.11));
-}
-
-const spur = [[-19.5, -27], [-23.4, -32], [-26.2, -38.5], [-25.7, -45.5], [-18.4, -53.5]];
-
-function spurDistance(x, z) {
-  if (x < -31 || x > -16 || z < -57 || z > -24) return Infinity;
-  let distance = Infinity;
-  for (let i = 1; i < spur.length; i++) {
-    const [ax, az] = spur[i - 1];
-    const [bx, bz] = spur[i];
-    const dx = bx - ax;
-    const dz = bz - az;
-    const t = THREE.MathUtils.clamp(((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz), 0, 1);
-    distance = Math.min(distance, Math.hypot(x - ax - dx * t, z - az - dz * t));
-  }
-  return distance;
-}
-
-export function ground(x, z) {
-  const bank = smooth(Math.abs(x - river(z)), 7.5, 22);
-  const channel = 1 - smooth(z, -57, -42);
-  const embankment = smooth(Math.max(Math.abs(x) - 40, -z - 65, z - 43), 0, 58);
-  const rolls = 0.56 * Math.sin(x * 0.19 + z * 0.11) + 0.35 * Math.cos(z * 0.23 - x * 0.08);
-  const overlook = 3.6 * smooth(z, 12, 44) * (1 - smooth(x, -18, -4));
-  const mound = 3.8 * Math.exp(-((x - 37) ** 2 / 150 + (z + 51) ** 2 / 195));
-  const shelf = 2.9 * (1 - smooth(Math.hypot((x + 34) / 10, (z + 42) / 15), 0.1, 1.6));
-  return -2.4 + Math.max(bank, channel) * (3.8 + rolls) + overlook + embankment * 22 + mound + shelf;
-}
 
 const sky = new THREE.Color('#91aaa8');
 const water = new THREE.Color('#456d68');

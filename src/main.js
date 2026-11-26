@@ -6,7 +6,8 @@ import '@fontsource/instrument-serif/latin-400.css';
 import '@fontsource/instrument-serif/latin-400-italic.css';
 import './style.css';
 import { ambience } from './ambience.js';
-import { discoveries, ground, landscape, spawn, waterline } from './landscape.js';
+import { bounds, canWalk, discoveries, ground, spawn, waterline, waterTooDeep } from './geography.js';
+import { landscape } from './landscape.js';
 
 const get = (id) => document.getElementById(id);
 const canvas = get('world');
@@ -110,15 +111,6 @@ function examine() {
   canvas.focus({ preventScroll: true });
 }
 
-function waterTooDeep(x, z) {
-  return ground(x, z) < waterline - 0.31;
-}
-
-function canWalk(x, z) {
-  return !waterTooDeep(x, z) &&
-    !discoveries.some((site) => Math.hypot(site.x - x, site.z - z) < site.footprint);
-}
-
 function tiltView(delta) {
   pitch = THREE.MathUtils.clamp(pitch + delta, -1.12, 1.04);
 }
@@ -138,8 +130,8 @@ function move(dt) {
     const stepX = (side * Math.cos(yaw) - forward * Math.sin(yaw)) * speed;
     const stepZ = -(side * Math.sin(yaw) + forward * Math.cos(yaw)) * speed;
     for (let step = 0; step < steps; step++) {
-      const x = THREE.MathUtils.clamp(position.x + stepX, -65, 69);
-      const z = THREE.MathUtils.clamp(position.z + stepZ, -104, 45);
+      const x = THREE.MathUtils.clamp(position.x + stepX, bounds.minX, bounds.maxX);
+      const z = THREE.MathUtils.clamp(position.z + stepZ, bounds.minZ, bounds.maxZ);
       if (canWalk(x, z)) {
         moved ||= x !== position.x || z !== position.z;
         position.x = x;
