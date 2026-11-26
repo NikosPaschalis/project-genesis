@@ -64,6 +64,14 @@ The first candidate visual capture exposed an omitted shore-path import from cyc
 
 **Question.** Can the new geometry and existing foliage share the frame more economically while retaining the same authored world?
 
-**Method and evidence.** Batched the house and bridge meshes by material and divided the existing grass into 18 m patches for frustum culling. Captured renderer counters from identical 880×550, reduced-motion poses on the pre-batch checkout and the candidate. Across six poses, draw calls fell from 863 to 441 and submitted triangles from 637,944 to 434,488. Every measured pose decreased on both counters. The southern view improved least on calls because it looks through many grass patches. These are work-submission counters, with no measured frame-time or hardware-performance claim. [Per-pose data](evidence/east-bank-renderer.json)
+**Method and evidence.** Batched the house and bridge meshes by material and divided the existing grass into 18 m patches for frustum culling. Captured renderer counters from identical 880×550, reduced-motion poses on the pre-batch checkout and the candidate. Across six poses, draw calls fell from 863 to 441 and submitted triangles from 638,044 to 434,488. Every measured pose decreased on both counters. The southern view improved least on calls because it looks through many grass patches. These are work-submission counters, with no measured frame-time or hardware-performance claim. [Per-pose data](evidence/east-bank-renderer.json)
 
 **Evaluation and next choice.** The counters support keeping the batches. The new world now provides evidence that can be encountered in either order, yet the previous journal imitates a fixed tour. Make its records reflect the player's own itinerary and let previously seen objects be compared without exposing unseen ones.
+
+## 9. Make the journal reflect the journey
+
+**Question.** Can the journal help players compare evidence from different routes while keeping unseen material hidden?
+
+**Method and evidence.** Entries now follow the order in which they were recorded. Three marginal comparisons become available only after both cited observations are present. The old saved ID array and its storage key still work. Enumerated all 64 subsets of the six observations with a stale ID included. Entry order was preserved, each comparison referenced only known IDs, and the original four-entry result opened without a marginal comparison.
+
+**Evaluation and next choice.** The journal now supports looking back over a player-chosen route. Numerical predicates and rendered stills have covered separate pieces, so the next cycle needs a repeatable input-driven run connecting the crossing, the sighting, and the journal through reload.

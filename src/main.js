@@ -7,6 +7,7 @@ import '@fontsource/instrument-serif/latin-400-italic.css';
 import './style.css';
 import { ambience } from './ambience.js';
 import { bounds, canWalk, discoveries, ground, spawn, walkingHeight, waterTooDeep } from './geography.js';
+import { journalEvidence } from './field-journal.js';
 import { findObservation } from './observations.js';
 import { landscape } from './landscape.js';
 
@@ -70,17 +71,30 @@ function renderJournal() {
   get('journal-summary').textContent = found.size
     ? `${found.size} field observation${found.size === 1 ? '' : 's'} recorded.`
     : 'Your observations will be recorded here as you examine sites across the Reach.';
-  const entries = get('entries');
-  entries.replaceChildren();
-  for (const { id, name, note } of discoveries) {
-    if (!found.has(id)) continue;
+  const { entries, comparisons } = journalEvidence(found);
+  const list = get('entries');
+  list.replaceChildren();
+  for (const { name, note } of entries) {
     const item = document.createElement('li');
     const title = document.createElement('h3');
     const text = document.createElement('p');
     title.textContent = name;
     text.textContent = note;
     item.append(title, text);
-    entries.append(item);
+    list.append(item);
+  }
+  const margin = get('journal-margin');
+  const connections = get('journal-comparisons');
+  margin.hidden = comparisons.length === 0;
+  connections.replaceChildren();
+  for (const { sites, question } of comparisons) {
+    const item = document.createElement('li');
+    const reference = document.createElement('h4');
+    const text = document.createElement('p');
+    reference.textContent = sites.map(site => site.name).join(' / ');
+    text.textContent = question;
+    item.append(reference, text);
+    connections.append(item);
   }
 }
 

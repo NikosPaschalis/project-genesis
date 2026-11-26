@@ -81,6 +81,12 @@ dialog h2, #fallback h2 { margin: 14px 0 7px; font: 400 50px/.95 var(--serif); }
 #entries li:last-child { border-bottom: 1px solid var(--line); }
 #entries h3 { margin: 0; color: var(--brass); font: 400 25px var(--serif); }
 #entries p { margin: 5px 0 0; }
+#journal-margin { margin: -8px 0 25px; padding: 15px; border-left: 2px solid #c2a173; background: #252e2d; }
+#journal-margin h3 { margin: 0; color: var(--brass); font: 400 25px var(--serif); }
+#journal-comparisons { list-style: none; margin: 0; padding: 0; }
+#journal-comparisons li { margin-top: 13px; }
+#journal-comparisons h4 { margin: 0 0 3px; color: #f0d6ae; font-size: 11px; font-weight: 500; }
+#journal-comparisons p { margin: 0; }
 #fallback { position: absolute; inset: 25% 10% auto; max-width: 430px; padding: 24px; background: #172326; }
 @media (max-width: 760px) {
   .masthead { min-height: 65px; }
