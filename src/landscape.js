@@ -5,19 +5,19 @@ export const waterline = -0.55;
 
 export const discoveries = [
   {
-    id: 'threshold', name: 'The Leaning Stone', x: -18, z: 22, footprint: 0.98,
+    id: 'threshold', name: 'The Leaning Stone', x: -18, z: 22, footprint: 0.98, targetHeight: 1.38,
     note: 'Three grooves turn toward the basin. Rain has softened two of them. The third still looks freshly cut.',
   },
   {
-    id: 'landing', name: 'The Boatless Landing', x: -20.5, z: -21, footprint: 0.51,
+    id: 'landing', name: 'The Boatless Landing', x: -20.5, z: -21, footprint: 0.51, targetHeight: 0.86,
     note: 'A mooring ring is polished on its landward edge. Someone used to tie something here, on the wrong side of the water.',
   },
   {
-    id: 'crown', name: 'The Listening Crown', x: 36, z: -48, footprint: 0.56,
+    id: 'crown', name: 'The Listening Crown', x: 36, z: -48, footprint: 0.56, targetHeight: 0.86,
     note: 'The stone holds the day’s warmth. Pressing a palm to it, you feel three pulses and a silence long enough to mistake for an answer.',
   },
   {
-    id: 'silt-gate', name: 'The Silt Gate', x: -28.2, z: -38.5, footprint: 1.3,
+    id: 'silt-gate', name: 'The Silt Gate', x: -28.2, z: -38.5, footprint: 1.3, targetHeight: 1.44,
     note: 'Three bands of silt cross the stone at a slant, each rising toward the hill. The water would have had to climb to leave them that way.',
   },
 ];
@@ -300,7 +300,7 @@ function makePlants(scene) {
     const size = 0.1 + Math.pow(random(), 4) * 2.7;
     rocks.push({ x, y, z, sx: size * 1.3, sy: size * (0.35 + random() * 0.65), sz: size, rotation: random() * 6, color: pick(rockColors) });
   }
-  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z }) => spurDistance(x, z) > 2.1));
+  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z, sx }) => spurDistance(x, z) > Math.max(2.1, 1.15 + sx * 0.9)));
 
   const trunks = [];
   const needles = [];
@@ -454,8 +454,8 @@ function makeRuins(scene) {
   const gateY = ground(siltGate.x, siltGate.z);
   const basalt = new THREE.MeshStandardMaterial({ color: '#484f50', roughness: 0.94, flatShading: true });
   object(pillar, basalt, siltGate.x, gateY + 1.96, siltGate.z, 1.05, 4.65, 0.78, 0.23, -0.19);
-  object(pillar, stone[0], -24.45, ground(-24.45, -40.45) + 1.52, -40.45, 0.83, 3.8, 0.67, -0.35, 0.19);
-  object(shard, basalt, -27.1, gateY + 0.14, -42.2, 1.38, 0.62, 0.87, 0.72, -0.13);
+  object(pillar, stone[0], -23.55, ground(-23.55, -41) + 1.52, -41, 0.83, 3.8, 0.67, -0.35, 0.19);
+  object(shard, basalt, -30.4, ground(-30.4, -41.85) + 0.09, -41.85, 1.08, 0.55, 0.87, 0.72, -0.13);
   object(shard, stone[1], -29.15, gateY + 0.42, -40.2, 1.31, 0.83, 1.1, 0.52);
   for (let i = 0; i < 3; i++) {
     object(box, stone[2], siltGate.x + 0.42 + i * 0.057, gateY + 0.89 + i * 0.32, siltGate.z + 0.57,
@@ -464,7 +464,7 @@ function makeRuins(scene) {
   // Rounded stones show the direction of the dry channel on either approach.
   for (const [x, z, size] of [
     [-25.0, -33.4, 0.42], [-26.0, -34.8, 0.32], [-27.3, -36.5, 0.53],
-    [-27.6, -44.2, 0.55], [-26.5, -46.5, 0.38], [-24.2, -48.6, 0.45],
+    [-26.8, -42.9, 0.44], [-26.9, -45.1, 0.53], [-26.0, -47.2, 0.36], [-24.2, -48.6, 0.45],
     [-22.0, -51.0, 0.32],
   ]) {
     object(shard, stone[2], x, ground(x, z) + size * 0.12, z, size, size * 0.43, size * 0.67, x);

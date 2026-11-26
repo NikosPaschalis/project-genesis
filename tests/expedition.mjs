@@ -27,7 +27,7 @@ try {
     const response = await route.fetch();
     await route.fulfill({
       response,
-      body: await response.text() + '\nwindow.positionForSmokeTest = camera.position;',
+      body: await response.text() + '\nwindow.positionForSmokeTest = camera.position; window.rotationForSmokeTest = camera.rotation;',
     });
   });
 
@@ -81,6 +81,10 @@ try {
   await desktop.keyboard.press('KeyE');
   assert.equal(await desktop.locator('#field-note').isVisible(), false);
   await lookBy(-300);
+  await desktop.getByRole('button', { name: /Examine/ }).waitFor();
+  await walk('PageUp', () => window.rotationForSmokeTest.x > 0.8);
+  assert.equal(await desktop.getByRole('button', { name: /Examine/ }).isVisible(), false);
+  await walk('PageDown', () => window.rotationForSmokeTest.x < -0.07);
   await recordObservation(1);
 
   await desktop.keyboard.down('KeyW');
@@ -125,7 +129,7 @@ try {
   assert.equal(await desktop.locator('#entries li').count(), 4);
   assert.deepEqual(errors, []);
   await desktop.close();
-  console.log('Desktop passed: facing, site collision, in-world observations, pond boundary, all sites and journal persistence.');
+  console.log('Desktop passed: horizontal and vertical facing, site collision, in-world observations, pond boundary, all sites and journal persistence.');
 
   const mobile = await browser.newPage({
     viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', isMobile: true, hasTouch: true,

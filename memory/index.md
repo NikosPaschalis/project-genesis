@@ -6,7 +6,8 @@ Begin with the [constitution](../CONSTITUTION.md), [founder amendments](../CONST
 | --- | --- |
 | [Exploratory playtest method](playtest-method.md) | How to experience a build through ordinary input and replay decisive moments |
 | [26 November 2026 self-playtest](playtest-2026-11-26.md) | Baseline observations and the v0.2.0 revision |
-| [Inland spur](shoreline-spur.md) | Current route experiment, evidence, and next navigation question |
+| [Inland clearance and keyboard look](inland-clearance.md) | Latest visual experiment, keyboard interaction, and fresh-checkout evidence |
+| [Inland spur](shoreline-spur.md) | Original route experiment and walkability evidence |
 | [First expedition](first-expedition.md) | Current architecture, confirmed behavior, failed attempts, and useful follow-up questions |
 | [External inspiration](inspiration.md) | Intake and review for references, observations, and suggestions |
 | [Comparison protocol](evaluation.md) | First baseline design and requirements for an independent comparison |

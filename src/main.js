@@ -18,7 +18,7 @@ const fieldNote = get('field-note');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(57, 1, 0.12, 550);
 const keys = new Set();
-const boundKeys = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight', 'KeyE', 'KeyJ', 'Escape']);
+const boundKeys = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'ShiftLeft', 'ShiftRight', 'KeyE', 'KeyJ', 'Escape']);
 const storageKey = 'genesis:quiet-reach:journal:1';
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const compass = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
@@ -119,10 +119,15 @@ function canWalk(x, z) {
     !discoveries.some((site) => Math.hypot(site.x - x, site.z - z) < site.footprint);
 }
 
+function tiltView(delta) {
+  pitch = THREE.MathUtils.clamp(pitch + delta, -1.12, 1.04);
+}
+
 function move(dt) {
   const forward = Number(keys.has('KeyW') || keys.has('ArrowUp')) - Number(keys.has('KeyS') || keys.has('ArrowDown'));
   const side = Number(keys.has('KeyD')) - Number(keys.has('KeyA'));
   yaw += (Number(keys.has('ArrowLeft')) - Number(keys.has('ArrowRight'))) * 1.6 * dt;
+  tiltView((Number(keys.has('PageUp')) - Number(keys.has('PageDown'))) * 1.38 * dt);
   const { position } = camera;
   let moved = false;
   if (forward || side) {
@@ -160,7 +165,11 @@ function move(dt) {
     const dx = site.x - position.x;
     const dz = site.z - position.z;
     const distance = Math.hypot(dx, dz);
-    return distance < 3.6 && (-dx * Math.sin(yaw) - dz * Math.cos(yaw)) > distance * 0.55;
+    if (distance >= 3.6 || (-dx * Math.sin(yaw) - dz * Math.cos(yaw)) <= distance * 0.55) return false;
+    const height = ground(site.x, site.z) + site.targetHeight - position.y;
+    const targetPitch = Math.atan2(height, distance);
+    const verticalAllowance = THREE.MathUtils.degToRad(camera.fov * 0.5 + 8);
+    return Math.abs(targetPitch - pitch) <= verticalAllowance;
   });
   if (target !== near) {
     near = target;
@@ -218,7 +227,7 @@ get('enter').addEventListener('click', () => {
   canvas.tabIndex = 0;
   canvas.focus({ preventScroll: true });
   const touch = matchMedia('(pointer: coarse)').matches;
-  announce(touch ? 'Hold the arrows to walk. Drag to look at nearby traces.' : 'Walk the path. Look toward nearby traces to examine them.');
+  announce(touch ? 'Hold the arrows to walk. Drag to look at nearby traces.' : 'Drag to look, or use Left/Right and Page Up/Down.');
 });
 
 get('journal-button').addEventListener('click', openJournal);
@@ -275,7 +284,7 @@ canvas.addEventListener('pointerdown', (event) => {
 canvas.addEventListener('pointermove', (event) => {
   if (drag?.id !== event.pointerId) return;
   yaw -= (event.clientX - drag.x) * 0.0042;
-  pitch = THREE.MathUtils.clamp(pitch - (event.clientY - drag.y) * 0.0042, -1.12, 1.04);
+  tiltView(-(event.clientY - drag.y) * 0.0042);
   drag.x = event.clientX;
   drag.y = event.clientY;
 });
