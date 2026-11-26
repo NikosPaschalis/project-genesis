@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { discoveries, ground, measureHouse } from './geography.js';
+import { discoveries, ground, measureHouse, sightline } from './geography.js';
 
 export function makeMeasureHouse(scene) {
   const masonry = ['#424b4a', '#596362', '#6c6b60', '#777366'].map(color =>
@@ -49,6 +49,24 @@ export function makeMeasureHouse(scene) {
       masonry[i % masonry.length]);
     slab.rotation.y = Math.sin(i * 3.78) * 0.10;
   }
+
+  const eye = ground(sightline.x, sightline.z) + 1.67;
+  const patina = new THREE.MeshStandardMaterial({ color: '#c39d67', emissive: '#624019', emissiveIntensity: 0.68, side: THREE.DoubleSide });
+  for (const [i, x] of sightline.layers.entries()) {
+    const depth = sightline.x - x;
+    const radius = sightline.radius * depth;
+    const arc = new THREE.Mesh(new THREE.RingGeometry(radius * 0.87, radius, 14, 1, 0.20 + i * 2.09, i === 2 ? 1.60 : 1.95), patina);
+    arc.rotation.y = Math.PI / 2;
+    arc.position.set(x, eye + sightline.rise * depth, z);
+    scene.add(arc);
+  }
+
+  const witnessY = ground(sightline.x, z);
+  block(sightline.x, witnessY - 0.035, z, 1.46, 0.19, 1.32, masonry[2]);
+  for (const side of [-1, 1]) {
+    block(sightline.x + 0.21, witnessY + 0.075, z + side * 0.32, 0.4, 0.043, 0.10, brass);
+  }
+  block(sightline.x + 0.17, witnessY + 0.06, z, 0.61, 0.04, 0.08, brass);
 
   const gauge = discoveries.find(site => site.id === 'dry-gauge');
   const base = ground(gauge.x, gauge.z);

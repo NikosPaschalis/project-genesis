@@ -2,6 +2,10 @@ import { MathUtils } from 'three';
 
 export const spawn = { x: -18, z: 34, yaw: -0.17, pitch: -0.07 };
 export const waterline = -0.55;
+export const sightline = {
+  x: 44.7, z: -10.2, rise: 0.037, radius: 0.076,
+  layers: [39.5, 34, 27.5],
+};
 
 export const discoveries = [
   {
@@ -23,6 +27,10 @@ export const discoveries = [
   {
     id: 'dry-gauge', name: 'The Dry Gauge', x: 31.1, z: -15.5, footprint: 0.69, targetHeight: 1.15,
     note: 'The brass scale has been fitted upside down. Someone hammered a new mark into the blank near its foot, higher than every line on the stone outside.',
+  },
+  {
+    id: 'seam', name: 'The Joined Mark', x: sightline.x, z: sightline.z, footprint: 0,
+    note: 'Seen from the worn footing, three slivers make one ring. The break in the ring faces open water. The old scale measures something lower than its missing piece.',
   },
 ];
 

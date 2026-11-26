@@ -7,6 +7,7 @@ import '@fontsource/instrument-serif/latin-400-italic.css';
 import './style.css';
 import { ambience } from './ambience.js';
 import { bounds, canWalk, discoveries, ground, spawn, walkingHeight, waterTooDeep } from './geography.js';
+import { findObservation } from './observations.js';
 import { landscape } from './landscape.js';
 
 const get = (id) => document.getElementById(id);
@@ -153,16 +154,7 @@ function move(dt) {
   camera.rotation.set(pitch, yaw, 0, 'YXZ');
 
   if (noteSite && Math.hypot(noteSite.x - position.x, noteSite.z - position.z) > 8) dismissNote();
-  const target = discoveries.find((site) => {
-    const dx = site.x - position.x;
-    const dz = site.z - position.z;
-    const distance = Math.hypot(dx, dz);
-    if (distance >= 3.6 || (-dx * Math.sin(yaw) - dz * Math.cos(yaw)) <= distance * 0.55) return false;
-    const height = ground(site.x, site.z) + site.targetHeight - position.y;
-    const targetPitch = Math.atan2(height, distance);
-    const verticalAllowance = THREE.MathUtils.degToRad(camera.fov * 0.5 + 8);
-    return Math.abs(targetPitch - pitch) <= verticalAllowance;
-  });
+  const target = findObservation(position, yaw, pitch, camera.fov);
   if (target !== near) {
     near = target;
     if (near) inspectLabel.textContent = `Examine ${near.name}`;

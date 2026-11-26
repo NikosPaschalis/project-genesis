@@ -35,3 +35,11 @@ World baseline is v0.4.0 at `63d2bcf`. The attached checkout was at `57d9319` an
 The first candidate visual capture exposed an omitted shore-path import from cycle 1, which passed the build and numerical survey but prevented browser entry. Restored that dependency before retaining any candidate captures. The pinned v0.4.0 browser suite passed after installing dependencies inside its own checkout. An earlier run with symlinked dependencies failed Vite's font serving boundary. Use a local npm cache in this sandbox.
 
 **Evaluation and next choice.** The house offers scale and turns the shore into a choice. Its aisles still lack a reason to study their alignment. Use their existing geometry to make perspective itself an observation.
+
+## 5. Make viewpoint part of discovery
+
+**Question.** Can the same object arrangement tell a different story when approached from another side?
+
+**Method and evidence.** Three pieces of a brass figure sit at different depths along the aisle. Their radius and height scale with distance from a worn footing so that the pieces share a projected center there. Recorded the same westward view from the footing and 1.15 m to one side. The first reads as one shape with seams and the second as several separate shapes. The target rule passed the intended center and a wrapped yaw at both field-of-view values. It rejected five off-axis, reverse-facing or steeply tilted poses at each value. [Matched rendered views](evidence/measure-alignment.webp)
+
+**Evaluation and next choice.** The visible shape provides a payoff before the note. The axial pose should still be tested with actual movement, including overshoot at low frame rates. Add an optional acoustic cue inside the house that changes with position and turn, so the place has another scale of attention.

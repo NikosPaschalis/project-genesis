@@ -13,7 +13,11 @@ const eastViews = [
   { name: 'crossing-west', x: -15, z: 13, yaw: -1.60, pitch: -0.10 },
   { name: 'southern-lookback', x: 26, z: 11, yaw: 0.31, pitch: -0.10 },
 ];
-const views = routeName === 'east' ? eastViews : [
+const sightViews = [
+  { name: 'joined', x: 44.7, z: -10.2, yaw: Math.PI / 2, pitch: 0.041 },
+  { name: 'separated', x: 44.7, z: -11.35, yaw: 1.49, pitch: 0.041 },
+];
+const views = routeName === 'east' ? eastViews : routeName === 'sight' ? sightViews : [
   { name: 'fork', x: -21.2, z: -27.8, yaw: 0.37, pitch: -0.12 },
   { name: 'approach', x: -25.7, z: -39.0, yaw: 0.12, pitch: -0.11 },
   { name: 'return-view', x: -24.5, z: -46.0, yaw: -2.05, pitch: -0.10 },
