@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { makeCrossing } from './crossing.js';
 import { makeMeasureHouse } from './measure-house.js';
+import { makeReeds } from './reeds.js';
 
 import { discoveries, ground, measureHouse, reedStairDistance, shorePath, spurDistance, trailDistance, waterline } from './geography.js';
 
@@ -217,6 +218,7 @@ function instancer(scene, geometry, material, items) {
 }
 
 function makePlants(scene) {
+  const houseAisle = (x, z, width) => x > 24 && x < 45.5 && Math.abs(z - measureHouse.z) < width;
   const random = generator(42);
   const pick = (options) => options[Math.floor(random() * options.length)];
   const greens = ['#77894e', '#a39455', '#647b51', '#556d50', '#c1ab68', '#829060', '#9c7951'].map((color) => new THREE.Color(color));
@@ -237,7 +239,8 @@ function makePlants(scene) {
     grass.push({ x, y: y - 0.09, z, sx: tuft * 0.35, sy: tuft * (0.18 + random() * 0.69), sz: tuft * 0.54, rotation: random() * 6.28, color: pick(greens) });
   }
   instancer(scene, blade, new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 1 }),
-    grass.filter(({ x, z, sy }) => Math.min(spurDistance(x, z), reedStairDistance(x, z)) > 1.25 || sy < 0.29));
+    grass.filter(({ x, z, sy }) => !houseAisle(x, z, 1.75) &&
+      (Math.min(spurDistance(x, z), reedStairDistance(x, z)) > 1.25 || sy < 0.29)));
 
   const rocks = [];
   const rockColors = ['#66716c', '#555f62', '#aba18b', '#7e8776', '#3e5355'].map((color) => new THREE.Color(color));
@@ -249,7 +252,8 @@ function makePlants(scene) {
     const size = 0.1 + Math.pow(random(), 4) * 2.7;
     rocks.push({ x, y, z, sx: size * 1.3, sy: size * (0.35 + random() * 0.65), sz: size, rotation: random() * 6, color: pick(rockColors) });
   }
-  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z, sx }) => Math.min(spurDistance(x, z), reedStairDistance(x, z)) > Math.max(2.1, 1.15 + sx * 0.9)));
+  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z, sx }) => !houseAisle(x, z, 1.8 + sx) &&
+    Math.min(spurDistance(x, z), reedStairDistance(x, z)) > Math.max(2.1, 1.15 + sx * 0.9)));
 
   const trunks = [];
   const houseClearance = (x, z) => x > 26 && x < 45 && Math.abs(z - measureHouse.z) < 8;
@@ -474,12 +478,14 @@ export function landscape(scene) {
   makePlants(scene);
   makeCrossing(scene);
   makeMeasureHouse(scene);
+  const reedTime = makeReeds(scene);
   const pendant = makeRuins(scene);
   const drift = makeDrift(scene);
 
   return (elapsed, position) => {
     dome.position.copy(position);
     time.value = elapsed;
+    reedTime.value = elapsed;
     drift.position.set(Math.sin(elapsed * 0.17) * 1.5, Math.sin(elapsed * 0.4) * 0.5, 0);
     pendant.rotation.y = elapsed * 0.16;
     pendant.position.y = 10.72 + Math.sin(elapsed * 0.72) * 0.38;

@@ -51,3 +51,11 @@ The first candidate visual capture exposed an omitted shore-path import from cyc
 **Method and evidence.** Extended the opt-in Web Audio graph. Wind brightens over the crossing. In the ruin it dulls and gives way to a softly varying three-part tone, panned from the middle bay. The same physical locations used for construction determine the transitions. Six numerical poses established 330 Hz wind center at the overlook, 510 Hz on the crossing and 230 Hz in the center bay. Resonance is zero at the overlook and outside the house, and unit strength at the center. A half-turn at the same approach position flipped pan from +1 to −1 at unchanged gain. These are synthesis parameters. Perceived level and quality require listening judgment.
 
 **Evaluation and next choice.** Sound is optional and the visual observation remains sufficient. The image comparisons exposed a different issue: grass crosses flooring and a boulder intrudes into an aisle. Control vegetation around architecture and give the waterline a distinct ecology.
+
+## 7. Let shore ecology explain the waterline
+
+**Question.** Can vegetation distinguish the still-water edge while keeping the trail and interior visual channels open?
+
+**Method and evidence.** Seeded reed colonies by water-relative height and let taller leaf tips respond to wind. The deterministic generator produced 34 tufts and 374 stems. Tuft anchors sit 0.106–0.310 m above the water plane and outside both ends of the crossing. Independently filtered the grass and large rocks that grew into the Measure House aisle. Before-and-after rendered views show the localized reed line and the cleared paving. The reduced-motion browser capture rendered the shader without console errors. [Shoreline comparison and cleared aisle](evidence/reed-beds-and-aisle.webp)
+
+**Evaluation and next choice.** The new reed line reads as a distinct littoral band. The isolated tree at the bend still fills much of the near frame and is worth testing with players before adjusting it. The house and bridge add many repeated meshes, so measure rendering cost before further expansion.
