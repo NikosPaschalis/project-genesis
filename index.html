@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#161e20" />
+  <meta name="description" content="An explorable landscape at the edge of a forgotten world." />
+  <link rel="icon" type="image/svg+xml" href="/genesis.svg" />
+  <title>The Quiet Reach · Project Genesis</title>
+</head>
+<body>
+  <main id="experience">
+    <canvas id="world" aria-label="The Quiet Reach, an explorable mountain basin"></canvas>
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <div class="brand">
+        <svg viewBox="0 0 36 36" width="35" height="35" fill="none" aria-hidden="true"><path d="M18 1.5 34.5 18 18 34.5 1.5 18 18 1.5Z" stroke="currentColor"/><path d="m18 7 8 16H10L18 7Z" stroke="currentColor"/><path d="M18 13v15M12 19h12" stroke="currentColor"/></svg>
+        <span>PROJECT <strong>GENESIS</strong></span>
+      </div>
+      <div class="top-actions">
+        <button id="journal-button" class="utility" type="button" hidden>Journal <span id="journal-count">0 / 3</span></button>
+        <button id="sound" class="utility sound" type="button" aria-label="Enable ambient sound" aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.35" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="muted-mark" d="m16 10 5 5m0-5-5 5"/><path class="volume-mark" d="M16 9a4 4 0 0 1 0 6m2-9a8 8 0 0 1 0 12"/></svg>
+          <span>Sound off</span>
+        </button>
+      </div>
+    </header>
+
+    <section id="arrival" aria-labelledby="title">
+      <p class="eyebrow"><span></span> THE FIRST EXPEDITION</p>
+      <h1 id="title">The Quiet<br /><em>Reach</em></h1>
+      <p class="introduction">At the edge of the known world, something still waits to be found.</p>
+      <button id="enter" class="enter" type="button"><span>Enter the Reach</span><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 16 15.5 4.5M6.5 4.5h9v9"/></svg></button>
+    </section>
+
+    <section id="field-hud" aria-label="Exploration" hidden>
+      <div class="compass"><span id="heading-left">NW</span><i></i><strong id="heading">N</strong><i></i><span id="heading-right">NE</span></div>
+      <div class="reticle" aria-hidden="true"></div>
+      <button id="inspect" class="inspect" hidden type="button"><kbd>E</kbd> <span>Examine</span></button>
+      <div class="touch-controls" aria-label="Movement controls">
+        <button type="button" data-key="KeyW" aria-label="Move forward"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 10 10 4 16 10 M10 4v12"/></svg></button>
+        <button type="button" data-key="KeyA" aria-label="Move left"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="M10 4 4 10l6 6 M4 10h12"/></svg></button>
+        <button type="button" data-key="KeyS" aria-label="Move back"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 10l6 6 6-6 M10 4v12"/></svg></button>
+        <button type="button" data-key="KeyD" aria-label="Move right"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="M10 4l6 6-6 6 M4 10h12"/></svg></button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="location"><svg class="location-icon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="m10 2 8 8-8 8-8-8Z"/><path d="m10 7 3 3-3 3-3-3Z"/></svg><div><span class="label">CURRENT REGION</span><strong id="region">The Quiet Reach</strong></div></div>
+      <div id="controls" class="controls"><span><kbd>W A S D</kbd> Move</span><span><kbd>Drag</kbd> Look</span><span><kbd>E</kbd> Examine</span></div>
+      <span class="version">EXPEDITION BUILD <b>0.1.0</b></span>
+    </footer>
+    <div id="message" role="status" aria-live="polite"></div>
+
+    <dialog id="journal" aria-labelledby="journal-title">
+      <div class="dialog-header"><p class="eyebrow"><span></span> THE QUIET REACH</p><button id="close-journal" class="utility" type="button" aria-label="Close field journal"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 3 10 10m0-10L3 13"/></svg></button></div>
+      <h2 id="journal-title">Field journal</h2>
+      <p id="journal-summary"></p>
+      <ol id="entries"></ol>
+      <button id="return" class="utility" type="button">Return to overlook</button>
+    </dialog>
+
+    <section id="fallback" role="alert" hidden>
+      <h2>The Reach could not open</h2>
+      <p>This expedition needs a browser with WebGL 2 and hardware acceleration enabled.</p>
+      <button class="utility" type="button" onclick="location.reload()">Try again</button>
+    </section>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
