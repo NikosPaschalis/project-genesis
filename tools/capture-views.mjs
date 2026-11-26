@@ -3,9 +3,14 @@ import { join, resolve } from 'node:path';
 import { chromium } from 'playwright-core';
 import { createServer } from 'vite';
 
-const [source, output] = process.argv.slice(2);
+const [source, output, routeName] = process.argv.slice(2);
 if (!source || !output) throw new Error('Usage: node tools/capture-views.mjs <checkout> <output directory>');
-const views = [
+const eastViews = [
+  { name: 'crown-descent', x: 35.5, z: -42, yaw: 2.86, pitch: -0.14 },
+  { name: 'reed-bend', x: 25, z: -24, yaw: 2.86, pitch: -0.12 },
+  { name: 'southern-lookback', x: 26, z: 11, yaw: 0.31, pitch: -0.10 },
+];
+const views = routeName === 'east' ? eastViews : [
   { name: 'fork', x: -21.2, z: -27.8, yaw: 0.37, pitch: -0.12 },
   { name: 'approach', x: -25.7, z: -39.0, yaw: 0.12, pitch: -0.11 },
   { name: 'return-view', x: -24.5, z: -46.0, yaw: -2.05, pitch: -0.10 },

@@ -34,12 +34,13 @@ export function trailDistance(x, z) {
 
 const spur = [[-19.5, -27], [-23.4, -32], [-26.2, -38.5], [-25.7, -45.5], [-18.4, -53.5]];
 
-export function spurDistance(x, z) {
-  if (x < -31 || x > -16 || z < -57 || z > -24) return Infinity;
+export const reedStair = [[36, -46], [34, -38], [29, -30], [24, -22], [22, -15], [25, -7], [27, 3], [26, 12]];
+
+function distanceToPath(x, z, points) {
   let distance = Infinity;
-  for (let i = 1; i < spur.length; i++) {
-    const [ax, az] = spur[i - 1];
-    const [bx, bz] = spur[i];
+  for (let i = 1; i < points.length; i++) {
+    const [ax, az] = points[i - 1];
+    const [bx, bz] = points[i];
     const dx = bx - ax;
     const dz = bz - az;
     const t = MathUtils.clamp(((x - ax) * dx + (z - az) * dz) / (dx * dx + dz * dz), 0, 1);
@@ -48,6 +49,15 @@ export function spurDistance(x, z) {
   return distance;
 }
 
+export function spurDistance(x, z) {
+  if (x < -31 || x > -16 || z < -57 || z > -24) return Infinity;
+  return distanceToPath(x, z, spur);
+}
+
+export function reedStairDistance(x, z) {
+  if (x < 17 || x > 42 || z < -51 || z > 17) return Infinity;
+  return distanceToPath(x, z, reedStair);
+}
 export function ground(x, z) {
   const bank = smooth(Math.abs(x - river(z)), 7.5, 22);
   const channel = 1 - smooth(z, -57, -42);
@@ -56,7 +66,9 @@ export function ground(x, z) {
   const overlook = 3.6 * smooth(z, 12, 44) * (1 - smooth(x, -18, -4));
   const mound = 3.8 * Math.exp(-((x - 37) ** 2 / 150 + (z + 51) ** 2 / 195));
   const shelf = 2.9 * (1 - smooth(Math.hypot((x + 34) / 10, (z + 42) / 15), 0.1, 1.6));
-  return -2.4 + Math.max(bank, channel) * (3.8 + rolls) + overlook + embankment * 22 + mound + shelf;
+  const spurRidge = 4.1 * Math.exp(-(((x - 34) / 5.8) ** 2 + ((z + 25) / 14) ** 2));
+  const reedShelf = 2.4 * Math.exp(-(((x - 27) / 7.2) ** 2 + ((z + 5) / 11) ** 2));
+  return -2.4 + Math.max(bank, channel) * (3.8 + rolls) + overlook + embankment * 22 + mound + shelf + spurRidge + reedShelf;
 }
 
 export const bounds = { minX: -65, maxX: 69, minZ: -104, maxZ: 45 };

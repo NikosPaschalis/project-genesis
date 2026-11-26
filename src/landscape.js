@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { discoveries, ground, spurDistance, trailDistance, waterline } from './geography.js';
+import { discoveries, ground, reedStairDistance, spurDistance, trailDistance, waterline } from './geography.js';
 
 function generator(seed) {
   return () => {
@@ -79,6 +79,7 @@ function makeTerrain(scene) {
   const sand = new THREE.Color('#9d8e6f');
   const trail = new THREE.Color('#a69b76');
   const gravel = new THREE.Color('#b0a18b');
+  const shale = new THREE.Color('#a68a76');
   for (let i = 0; i < points.count; i += 3) {
     const x = (points.getX(i) + points.getX(i + 1) + points.getX(i + 2)) / 3;
     const z = (points.getZ(i) + points.getZ(i + 1) + points.getZ(i + 2)) / 3;
@@ -87,6 +88,7 @@ function makeTerrain(scene) {
     color.lerp(sand, 1 - smooth(y, -0.6, 1.5));
     color.lerp(trail, (1 - smooth(trailDistance(x, z), 0.8, 3.0)) * 0.82);
     color.lerp(gravel, (1 - smooth(spurDistance(x, z), 0.65, 2.6)) * 0.77);
+    color.lerp(shale, (1 - smooth(reedStairDistance(x, z), 0.85, 2.9)) * 0.86);
     color.multiplyScalar(0.85 + random() * 0.29);
     for (let j = 0; j < 3; j++) colors.push(color.r, color.g, color.b);
   }
@@ -233,7 +235,7 @@ function makePlants(scene) {
     grass.push({ x, y: y - 0.09, z, sx: tuft * 0.35, sy: tuft * (0.18 + random() * 0.69), sz: tuft * 0.54, rotation: random() * 6.28, color: pick(greens) });
   }
   instancer(scene, blade, new THREE.MeshStandardMaterial({ side: THREE.DoubleSide, roughness: 1 }),
-    grass.filter(({ x, z, sy }) => spurDistance(x, z) > 1.25 || sy < 0.29));
+    grass.filter(({ x, z, sy }) => Math.min(spurDistance(x, z), reedStairDistance(x, z)) > 1.25 || sy < 0.29));
 
   const rocks = [];
   const rockColors = ['#66716c', '#555f62', '#aba18b', '#7e8776', '#3e5355'].map((color) => new THREE.Color(color));
@@ -245,7 +247,7 @@ function makePlants(scene) {
     const size = 0.1 + Math.pow(random(), 4) * 2.7;
     rocks.push({ x, y, z, sx: size * 1.3, sy: size * (0.35 + random() * 0.65), sz: size, rotation: random() * 6, color: pick(rockColors) });
   }
-  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z, sx }) => spurDistance(x, z) > Math.max(2.1, 1.15 + sx * 0.9)));
+  instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z, sx }) => Math.min(spurDistance(x, z), reedStairDistance(x, z)) > Math.max(2.1, 1.15 + sx * 0.9)));
 
   const trunks = [];
   const needles = [];

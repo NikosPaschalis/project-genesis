@@ -175,9 +175,11 @@ function move(dt) {
   get('heading-left').textContent = compass[(index + compass.length - 1) % compass.length];
   get('heading').textContent = compass[index];
   get('heading-right').textContent = compass[(index + 1) % compass.length];
-  get('region').textContent = position.x > 18 && position.z < -30
-    ? 'The Crown Bank'
-    : position.z < 2 ? 'Stillwater Basin' : 'The Quiet Reach';
+  let region = 'The Quiet Reach';
+  if (position.z < 2) region = 'Stillwater Basin';
+  if (position.x > 18 && position.z < -39) region = 'The Crown Bank';
+  if (position.x > 18 && position.z >= -39 && position.z < 15) region = 'The Reed Stair';
+  get('region').textContent = region;
 }
 
 function draw(now) {
