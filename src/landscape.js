@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { makeCrossing } from './crossing.js';
+import { makeMeasureHouse } from './measure-house.js';
 
-import { discoveries, ground, reedStairDistance, spurDistance, trailDistance, waterline } from './geography.js';
+import { discoveries, ground, measureHouse, reedStairDistance, shorePath, spurDistance, trailDistance, waterline } from './geography.js';
 
 function generator(seed) {
   return () => {
@@ -251,6 +252,7 @@ function makePlants(scene) {
   instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z, sx }) => Math.min(spurDistance(x, z), reedStairDistance(x, z)) > Math.max(2.1, 1.15 + sx * 0.9)));
 
   const trunks = [];
+  const houseClearance = (x, z) => x > 26 && x < 45 && Math.abs(z - measureHouse.z) < 8;
   const needles = [];
   const wood = new THREE.Color('#564940');
   const needlesColors = ['#354a44', '#455c4e', '#50624e', '#667353', '#384c4c'].map((color) => new THREE.Color(color));
@@ -259,10 +261,15 @@ function makePlants(scene) {
     const z = random() * 147 - 115;
     const y = ground(x, z);
     if (y < 0.9 || (x > -32 && x < 48 && z > -80 && random() < 0.89)
-      || Math.hypot(x - 27, z + 53) < 17 || Math.abs(x - path(z)) < 5) continue;
+      || Math.hypot(x - 27, z + 53) < 17 || Math.abs(x - shorePath(z)) < 5) continue;
     const height = 2.0 + random() * 6;
     const tilt = (random() - 0.5) * 0.22;
     const radius = height * (0.16 + random() * 0.10);
+    if (houseClearance(x, z)) {
+      // Consume the same samples so distant trees keep their authored silhouettes.
+      for (let layer = 0; layer < 3; layer++) { random(); pick(needlesColors); }
+      continue;
+    }
     trunks.push({ x, y: y + height * 0.35, z, sx: 0.15, sy: height * 0.7, sz: 0.15, tilt, color: wood });
     for (let layer = 0; layer < 3; layer++) {
       needles.push({ x, y: y + height * (0.50 + layer * 0.20), z, sx: radius * (1 - layer * 0.23),
@@ -466,6 +473,7 @@ export function landscape(scene) {
   const time = makeWater(scene);
   makePlants(scene);
   makeCrossing(scene);
+  makeMeasureHouse(scene);
   const pendant = makeRuins(scene);
   const drift = makeDrift(scene);
 

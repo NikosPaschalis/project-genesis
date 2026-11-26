@@ -20,15 +20,19 @@ export const discoveries = [
     id: 'silt-gate', name: 'The Silt Gate', x: -28.2, z: -38.5, footprint: 1.3, targetHeight: 1.44,
     note: 'Three bands of silt cross the stone at a slant, each rising toward the hill. The water would have had to climb to leave them that way.',
   },
+  {
+    id: 'dry-gauge', name: 'The Dry Gauge', x: 31.1, z: -15.5, footprint: 0.69, targetHeight: 1.15,
+    note: 'The brass scale has been fitted upside down. Someone hammered a new mark into the blank near its foot, higher than every line on the stone outside.',
+  },
 ];
 
 const smooth = MathUtils.smoothstep;
 const river = (z) => 5 + Math.sin(z * 0.046 - 0.4) * 9;
-const path = (z) => -18 + 2.4 * Math.sin((z - 20) * 0.077);
+export const shorePath = (z) => -18 + 2.4 * Math.sin((z - 20) * 0.077);
 
 export function trailDistance(x, z) {
   if (z > -51) {
-    const shore = Math.abs(x - path(z));
+    const shore = Math.abs(x - shorePath(z));
     if (z < 7 || z > 22 || x < -24 || x > -9) return shore;
     return Math.min(shore, distanceToPath(x, z, westApproach));
   }
@@ -76,6 +80,22 @@ export function ground(x, z) {
   return -2.4 + Math.max(bank, channel) * (3.8 + rolls) + overlook + embankment * 22 + mound + shelf + spurRidge + reedShelf;
 }
 
+export const measureHouse = {
+  z: -10.2,
+  walls: [
+    { x: 29, halfOpening: 2.05, halfWidth: 5.4, thickness: 1.45, height: 9.1 },
+    { x: 35, halfOpening: 1.82, halfWidth: 6.0, thickness: 1.65, height: 10.2 },
+    { x: 41, halfOpening: 1.65, halfWidth: 4.8, thickness: 1.28, height: 8.3 },
+  ],
+};
+
+function inMeasureWall(x, z) {
+  const lateral = Math.abs(z - measureHouse.z);
+  return measureHouse.walls.some(wall =>
+    Math.abs(x - wall.x) < wall.thickness / 2 + 0.25 &&
+    lateral > wall.halfOpening - 0.25 && lateral < wall.halfWidth + 0.25);
+}
+
 export const crossing = { west: -12, east: 26, z: 12, halfWidth: 1.55 };
 
 export function deckHeight(x) {
@@ -102,6 +122,6 @@ export function waterTooDeep(x, z) {
 
 export function canWalk(x, z) {
   return x >= bounds.minX && x <= bounds.maxX && z >= bounds.minZ && z <= bounds.maxZ &&
-    !waterTooDeep(x, z) &&
+    !waterTooDeep(x, z) && !inMeasureWall(x, z) &&
     !discoveries.some((site) => Math.hypot(site.x - x, site.z - z) < site.footprint);
 }

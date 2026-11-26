@@ -8,6 +8,8 @@ if (!source || !output) throw new Error('Usage: node tools/capture-views.mjs <ch
 const eastViews = [
   { name: 'crown-descent', x: 35.5, z: -42, yaw: 2.86, pitch: -0.14 },
   { name: 'reed-bend', x: 25, z: -24, yaw: 2.86, pitch: -0.12 },
+  { name: 'measure-approach', x: 24, z: -13.2, yaw: -1.97, pitch: 0.09 },
+  { name: 'measure-aisle', x: 32, z: -10.2, yaw: -1.56, pitch: 0.08 },
   { name: 'crossing-west', x: -15, z: 13, yaw: -1.60, pitch: -0.10 },
   { name: 'southern-lookback', x: 26, z: 11, yaw: 0.31, pitch: -0.10 },
 ];
@@ -33,6 +35,7 @@ try {
   });
   const page = await browser.newPage({ viewport: { width: 880, height: 550 }, reducedMotion: 'reduce' });
   const errors = [];
+  page.on('console', entry => { if (entry.type() === 'error') errors.push(entry.text()); });
   page.on('pageerror', error => errors.push(error.message));
   await page.route(url => url.pathname === '/src/main.js', async route => {
     const response = await route.fetch();
@@ -47,7 +50,9 @@ try {
   });
   const { port } = server.httpServer.address();
   await page.goto(`http://127.0.0.1:${port}`, { waitUntil: 'networkidle' });
-  await page.getByRole('button', { name: 'Enter the Reach' }).click();
+  const enter = page.getByRole('button', { name: 'Enter the Reach' });
+  if (!(await enter.isVisible()) && errors.length) throw new Error(errors.join('\n'));
+  await enter.click();
   await page.evaluate(() => document.fonts.ready.then(() => true));
   for (const view of views) {
     await page.evaluate(pose => window.captureView(pose), view);

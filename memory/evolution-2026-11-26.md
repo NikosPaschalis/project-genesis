@@ -25,3 +25,13 @@ World baseline is v0.4.0 at `63d2bcf`. The attached checkout was at `57d9319` an
 **Method and evidence.** Added a 38 m timber crossing on stone piers, with a continuous deck height used for both movement and construction. Its west approach branches off the old descent. The z=12 route changed from 172 m around the basin to 42 m across it in the half-metre cardinal survey. The three other transects still have 55–57 blocked cells. A denser probe checked 915 center and shoulder locations on the deck and 12 locations just outside it over deep water. All supported or rejected movement as intended. [Crossing survey](evidence/basin-survey-crossing.json)
 
 **Evaluation and next choice.** The new route permits both an early excursion and a shorter return after the Crown. A bridge alone could reduce the eastern shore to transit. Give the far bank a substantial spatial discovery that can be approached from either direction.
+
+## 4. Build a landmark at two scales
+
+**Question.** Can a monumental structure draw someone off the new trail and offer an interior route worth inspecting?
+
+**Method and evidence.** The Measure House places three open stone bays on the shoulder above the path. The central aisle is continuous, with open flanks and a separate exterior object. The same wall dimensions drive construction and the walking boundaries. All 459 probes in three lines through the aisle were walkable. Six wall-face probes blocked movement and six exterior probes remained open. In the fixed browser comparison, the low red path remains readable at the bend while the tall bays take over the left-hand silhouette. At the approach, the open bay and paving are visible from the path. [Baseline bend, revised bend, and approach](evidence/east-bank-comparison.webp)
+
+The first candidate visual capture exposed an omitted shore-path import from cycle 1, which passed the build and numerical survey but prevented browser entry. Restored that dependency before retaining any candidate captures. The pinned v0.4.0 browser suite passed after installing dependencies inside its own checkout. An earlier run with symlinked dependencies failed Vite's font serving boundary. Use a local npm cache in this sandbox.
+
+**Evaluation and next choice.** The house offers scale and turns the shore into a choice. Its aisles still lack a reason to study their alignment. Use their existing geometry to make perspective itself an observation.
