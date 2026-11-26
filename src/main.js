@@ -6,7 +6,7 @@ import '@fontsource/instrument-serif/latin-400.css';
 import '@fontsource/instrument-serif/latin-400-italic.css';
 import './style.css';
 import { ambience } from './ambience.js';
-import { bounds, canWalk, discoveries, ground, spawn, waterline, waterTooDeep } from './geography.js';
+import { bounds, canWalk, discoveries, ground, spawn, walkingHeight, waterTooDeep } from './geography.js';
 import { landscape } from './landscape.js';
 
 const get = (id) => document.getElementById(id);
@@ -46,7 +46,7 @@ try {
 function revertCamera() {
   yaw = spawn.yaw;
   pitch = spawn.pitch;
-  camera.position.set(spawn.x, ground(spawn.x, spawn.z) + 1.67, spawn.z);
+  camera.position.set(spawn.x, walkingHeight(spawn.x, spawn.z) + 1.67, spawn.z);
   camera.rotation.set(pitch, yaw, 0, 'YXZ');
 }
 
@@ -148,7 +148,7 @@ function move(dt) {
   }
   if (moved) footsteps += dt * 10;
   const bob = moved && !reduceMotion ? Math.sin(footsteps) * 0.035 : 0;
-  const height = Math.max(ground(position.x, position.z), waterline) + 1.67;
+  const height = walkingHeight(position.x, position.z) + 1.67;
   position.y = THREE.MathUtils.damp(position.y, height + bob, 12, dt);
   camera.rotation.set(pitch, yaw, 0, 'YXZ');
 

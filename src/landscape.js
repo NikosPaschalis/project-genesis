@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { makeCrossing } from './crossing.js';
 
 import { discoveries, ground, reedStairDistance, spurDistance, trailDistance, waterline } from './geography.js';
 
@@ -464,6 +465,7 @@ export function landscape(scene) {
   makeTerrain(scene);
   const time = makeWater(scene);
   makePlants(scene);
+  makeCrossing(scene);
   const pendant = makeRuins(scene);
   const drift = makeDrift(scene);
 

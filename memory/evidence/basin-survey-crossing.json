@@ -1,0 +1,69 @@
+{
+  "spacing": 0.5,
+  "transects": [
+    {
+      "west": [
+        -15,
+        12
+      ],
+      "east": [
+        27,
+        12
+      ],
+      "submergedSpan": [
+        -7.5,
+        20
+      ],
+      "blockedCells": 0,
+      "cardinalDistance": 42
+    },
+    {
+      "west": [
+        -15,
+        8
+      ],
+      "east": [
+        27,
+        8
+      ],
+      "submergedSpan": [
+        -10,
+        18
+      ],
+      "blockedCells": 57,
+      "cardinalDistance": 47
+    },
+    {
+      "west": [
+        -15,
+        4
+      ],
+      "east": [
+        27,
+        4
+      ],
+      "submergedSpan": [
+        -11.5,
+        16
+      ],
+      "blockedCells": 56,
+      "cardinalDistance": 55
+    },
+    {
+      "west": [
+        -15,
+        0
+      ],
+      "east": [
+        27,
+        0
+      ],
+      "submergedSpan": [
+        -12.5,
+        14.5
+      ],
+      "blockedCells": 55,
+      "cardinalDistance": 63
+    }
+  ]
+}

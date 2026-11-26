@@ -27,11 +27,16 @@ const river = (z) => 5 + Math.sin(z * 0.046 - 0.4) * 9;
 const path = (z) => -18 + 2.4 * Math.sin((z - 20) * 0.077);
 
 export function trailDistance(x, z) {
-  if (z > -51) return Math.abs(x - path(z));
+  if (z > -51) {
+    const shore = Math.abs(x - path(z));
+    if (z < 7 || z > 22 || x < -24 || x > -9) return shore;
+    return Math.min(shore, distanceToPath(x, z, westApproach));
+  }
   if (x < -20 || x > 35) return Infinity;
   return Math.abs(z + 55 + 2 * Math.sin((x + 13) * 0.11));
 }
 
+const westApproach = [[-18, 19], [-16, 15], [-12, 12], [-10, 12]];
 const spur = [[-19.5, -27], [-23.4, -32], [-26.2, -38.5], [-25.7, -45.5], [-18.4, -53.5]];
 
 export const reedStair = [[36, -46], [34, -38], [29, -30], [24, -22], [22, -15], [25, -7], [27, 3], [26, 12]];
@@ -71,10 +76,28 @@ export function ground(x, z) {
   return -2.4 + Math.max(bank, channel) * (3.8 + rolls) + overlook + embankment * 22 + mound + shelf + spurRidge + reedShelf;
 }
 
+export const crossing = { west: -12, east: 26, z: 12, halfWidth: 1.55 };
+
+export function deckHeight(x) {
+  const t = (x - crossing.west) / (crossing.east - crossing.west);
+  const west = ground(crossing.west, crossing.z) + 0.14;
+  const east = ground(crossing.east, crossing.z) + 0.14;
+  return MathUtils.lerp(west, east, t) + Math.sin(Math.PI * t) * 0.37;
+}
+
+export function onDeck(x, z) {
+  return x >= crossing.west && x <= crossing.east && Math.abs(z - crossing.z) <= crossing.halfWidth;
+}
+
+export function walkingHeight(x, z) {
+  const terrain = ground(x, z);
+  return onDeck(x, z) ? Math.max(terrain, deckHeight(x)) : Math.max(terrain, waterline);
+}
+
 export const bounds = { minX: -65, maxX: 69, minZ: -104, maxZ: 45 };
 
 export function waterTooDeep(x, z) {
-  return ground(x, z) < waterline - 0.31;
+  return !onDeck(x, z) && ground(x, z) < waterline - 0.31;
 }
 
 export function canWalk(x, z) {

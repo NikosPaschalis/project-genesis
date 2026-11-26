@@ -17,3 +17,11 @@ World baseline is v0.4.0 at `63d2bcf`. The attached checkout was at `57d9319` an
 **Method and evidence.** Added the Reed Stair, a bent shale trail from the Crown Bank to the southern shore. A raised shoulder and a lower shelf give the route an inland edge and alternating views over water. Terrain coloration and vegetation clearance use the same authored path. Sampling 51 positions on each of the seven center-line segments found no blocked locations. Elevation ranged from 1.59 to 5.87 m and the steepest sampled grade was 0.244 m/m.
 
 **Evaluation and next choice.** The route supplies an east-bank destination and a natural approach to the z=12 transect. Advance the crossing as a raised walking surface so the existing lake and its water boundary remain intact.
+
+## 3. Close the basin loop with a real walking surface
+
+**Question.** Does a single visible crossing change the route network while preserving deep water elsewhere?
+
+**Method and evidence.** Added a 38 m timber crossing on stone piers, with a continuous deck height used for both movement and construction. Its west approach branches off the old descent. The z=12 route changed from 172 m around the basin to 42 m across it in the half-metre cardinal survey. The three other transects still have 55–57 blocked cells. A denser probe checked 915 center and shoulder locations on the deck and 12 locations just outside it over deep water. All supported or rejected movement as intended. [Crossing survey](evidence/basin-survey-crossing.json)
+
+**Evaluation and next choice.** The new route permits both an early excursion and a shorter return after the Crown. A bridge alone could reduce the eastern shore to transit. Give the far bank a substantial spatial discovery that can be approached from either direction.

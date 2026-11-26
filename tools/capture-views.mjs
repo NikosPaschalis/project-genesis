@@ -8,6 +8,7 @@ if (!source || !output) throw new Error('Usage: node tools/capture-views.mjs <ch
 const eastViews = [
   { name: 'crown-descent', x: 35.5, z: -42, yaw: 2.86, pitch: -0.14 },
   { name: 'reed-bend', x: 25, z: -24, yaw: 2.86, pitch: -0.12 },
+  { name: 'crossing-west', x: -15, z: 13, yaw: -1.60, pitch: -0.10 },
   { name: 'southern-lookback', x: 26, z: 11, yaw: 0.31, pitch: -0.10 },
 ];
 const views = routeName === 'east' ? eastViews : [
@@ -37,7 +38,7 @@ try {
     const response = await route.fetch();
     // Fixed viewpoints support visual comparison. The shipped client has no camera test API.
     const capture = `window.captureView = ({ x, z, yaw: heading, pitch: tilt }) => {
-      camera.position.set(x, ground(x,z) + 1.67, z);
+      camera.position.set(x, (typeof walkingHeight === 'function' ? walkingHeight(x, z) : ground(x, z)) + 1.67, z);
       yaw = heading;
       pitch = tilt;
       document.getElementById('message').textContent = '';
