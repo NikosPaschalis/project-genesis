@@ -4,6 +4,8 @@ Begin with the [constitution](../CONSTITUTION.md), [founder amendments](../CONST
 
 | Record | Use |
 | --- | --- |
+| [Exploratory playtest method](playtest-method.md) | How to experience a build through ordinary input and replay decisive moments |
+| [26 November 2026 self-playtest](playtest-2026-11-26.md) | Baseline observations and the v0.2.0 revision |
 | [First expedition](first-expedition.md) | Current architecture, confirmed behavior, failed attempts, and useful follow-up questions |
 | [External inspiration](inspiration.md) | Intake and review for references, observations, and suggestions |
 | [Comparison protocol](evaluation.md) | First baseline design and requirements for an independent comparison |

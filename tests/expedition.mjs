@@ -16,7 +16,7 @@ try {
     args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
   });
 
-  const desktop = await browser.newPage({ viewport: { width: 640, height: 430 }, reducedMotion: 'reduce' });
+  const desktop = await browser.newPage({ viewport: { width: 560, height: 430 }, reducedMotion: 'reduce' });
   const errors = [];
   desktop.on('pageerror', (error) => errors.push(error.message));
   desktop.on('console', (entry) => {
@@ -37,16 +37,24 @@ try {
   await desktop.getByRole('button', { name: 'Enable ambient sound' }).click();
   await desktop.getByRole('button', { name: 'Mute ambient sound' }).click();
 
-  await desktop.mouse.move(400, 210);
-  await desktop.mouse.down();
-  await desktop.mouse.move(360, 210);
-  await desktop.mouse.up();
+  async function lookBy(dx) {
+    const start = dx >= 0 ? 215 : 345;
+    await desktop.mouse.move(start, 210);
+    await desktop.mouse.down();
+    await desktop.mouse.move(start + dx, 210);
+    await desktop.mouse.up();
+  }
+
+  await lookBy(-40);
 
   async function walk(key, condition, value) {
     await desktop.keyboard.down('Shift');
     await desktop.keyboard.down(key);
     try {
-      await desktop.waitForFunction(condition, value, { timeout: 45_000 });
+      await desktop.waitForFunction(condition, value, { timeout: 75_000 });
+    } catch (error) {
+      const position = await desktop.evaluate(() => window.positionForSmokeTest.toArray());
+      throw new Error(`Movement by ${key} toward ${value ?? 'water boundary'} stopped at ${position.join(', ')}`, { cause: error });
     } finally {
       await desktop.keyboard.up(key);
       await desktop.keyboard.up('Shift');
@@ -57,21 +65,43 @@ try {
     const button = desktop.getByRole('button', { name: /Examine/ });
     await button.waitFor();
     await desktop.keyboard.press('KeyE');
+    await desktop.locator('#field-note').waitFor();
+    assert.equal(await desktop.locator('#journal').isVisible(), false);
+    await desktop.keyboard.press('KeyJ');
     await desktop.getByRole('heading', { name: 'Field journal' }).waitFor();
     assert.equal(await desktop.locator('#entries li').count(), count);
     await desktop.keyboard.press('Escape');
+    console.log(`Recorded observation ${count} in the field and verified it in the journal.`);
   }
 
   await walk('KeyW', (z) => window.positionForSmokeTest.z < z, 25);
+  await desktop.getByRole('button', { name: /Examine/ }).waitFor();
+  await lookBy(300);
+  await desktop.getByRole('button', { name: /Examine/ }).waitFor({ state: 'hidden' });
+  await desktop.keyboard.press('KeyE');
+  assert.equal(await desktop.locator('#field-note').isVisible(), false);
+  await lookBy(-300);
   await recordObservation(1);
-  await walk('KeyW', (z) => window.positionForSmokeTest.z < z, -19);
+
+  await desktop.keyboard.down('KeyW');
+  try {
+    await desktop.waitForFunction(() => window.positionForSmokeTest.z < 23.4);
+    await desktop.waitForTimeout(1500);
+    assert.ok(await desktop.evaluate(() => window.positionForSmokeTest.z >= 22.9), 'The stone blocks forward movement');
+    assert.doesNotMatch(await desktop.locator('#message').textContent(), /too deep/);
+  } finally {
+    await desktop.keyboard.up('KeyW');
+  }
+  await walk('KeyA', (x) => window.positionForSmokeTest.x < x, -21.1);
+  await walk('KeyW', () => !document.querySelector('#inspect').hidden && document.querySelector('#inspect span').textContent.includes('Landing'));
   await recordObservation(2);
 
   await walk('KeyD', () => document.querySelector('#message').textContent.includes('too deep'));
   await walk('KeyA', (x) => window.positionForSmokeTest.x < x, -18);
   await walk('KeyW', (z) => window.positionForSmokeTest.z < z, -58);
-  await walk('KeyD', (x) => window.positionForSmokeTest.x > x, 36);
-  await walk('KeyS', (z) => window.positionForSmokeTest.z > z, -50);
+  await walk('KeyD', (x) => window.positionForSmokeTest.x > x, 35.2);
+  for (let quarter = 0; quarter < 4; quarter++) await lookBy(187);
+  await walk('KeyW', () => !document.querySelector('#inspect').hidden && document.querySelector('#inspect span').textContent.includes('Crown'));
   await recordObservation(3);
 
   await desktop.keyboard.press('KeyJ');
@@ -79,11 +109,11 @@ try {
   await desktop.waitForFunction(() => Math.abs(window.positionForSmokeTest.z - 34) < 0.01);
   await desktop.reload();
   await desktop.getByRole('button', { name: 'Enter the Reach' }).click();
-  await desktop.getByRole('button', { name: /Journal 3 \/ 3/ }).click();
+  await desktop.getByRole('button', { name: 'Journal', exact: true }).click();
   assert.equal(await desktop.locator('#entries li').count(), 3);
   assert.deepEqual(errors, []);
   await desktop.close();
-  console.log('Desktop passed: WebGL, sound toggle, drag, pond boundary, all three observations, journal persistence and return.');
+  console.log('Desktop passed: facing, site collision, in-world observations, pond boundary, all sites and journal persistence.');
 
   const mobile = await browser.newPage({
     viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', isMobile: true, hasTouch: true,
@@ -94,6 +124,9 @@ try {
   const bounds = await forward.boundingBox();
   assert.ok(bounds);
   const cdp = await mobile.context().newCDPSession(mobile);
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y: 420 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: 160, y: 420 }] });
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await cdp.send('Input.dispatchTouchEvent', {
     type: 'touchStart',
     touchPoints: [{ x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 }],
@@ -101,10 +134,12 @@ try {
   await mobile.getByRole('button', { name: /Examine/ }).waitFor({ timeout: 45_000 });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
   await mobile.getByRole('button', { name: /Examine/ }).tap();
+  await mobile.locator('#field-note').waitFor();
+  await mobile.getByRole('button', { name: 'Journal', exact: true }).tap();
   await mobile.getByRole('heading', { name: 'Field journal' }).waitFor();
   assert.equal(await mobile.locator('#entries li').count(), 1);
   await mobile.close();
-  console.log('Mobile passed: viewport, touch movement and examine.');
+  console.log('Mobile passed: touch look, movement, field note and journal.');
 
   if (process.env.GENESIS_CAPTURE_DIR) {
     const directory = process.env.GENESIS_CAPTURE_DIR;

@@ -12,14 +12,17 @@ const get = (id) => document.getElementById(id);
 const canvas = get('world');
 const journal = get('journal');
 const inspect = get('inspect');
+const inspectLabel = inspect.querySelector('span');
+const reticle = document.querySelector('.reticle');
+const fieldNote = get('field-note');
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(57, 1, 0.12, 550);
 const keys = new Set();
-const boundKeys = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight', 'KeyE', 'KeyJ']);
+const boundKeys = new Set(['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'ShiftRight', 'KeyE', 'KeyJ', 'Escape']);
 const storageKey = 'genesis:quiet-reach:journal:1';
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const compass = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-let renderer, animate, drag, near, noticeTimer, playAudio;
+let renderer, animate, drag, near, noteSite, noticeTimer, playAudio;
 let exploring = false;
 let soundOn = false;
 let yaw = spawn.yaw;
@@ -62,9 +65,8 @@ function announce(message) {
 }
 
 function renderJournal() {
-  get('journal-count').textContent = `${found.size} / ${discoveries.length}`;
   get('journal-summary').textContent = found.size
-    ? `${found.size} of ${discoveries.length} field observations recorded.`
+    ? `${found.size} field observation${found.size === 1 ? '' : 's'} recorded.`
     : 'Your observations will be recorded here as you examine sites across the Reach.';
   const entries = get('entries');
   entries.replaceChildren();
@@ -80,7 +82,13 @@ function renderJournal() {
   }
 }
 
+function dismissNote() {
+  noteSite = undefined;
+  fieldNote.hidden = true;
+}
+
 function openJournal() {
+  dismissNote();
   keys.clear();
   drag = undefined;
   renderJournal();
@@ -88,14 +96,27 @@ function openJournal() {
 }
 
 function examine() {
-  if (!exploring || journal.open || !near) return;
+  if (!exploring || journal.open || !near || near === noteSite) return;
   found.add(near.id);
   try {
     localStorage.setItem(storageKey, JSON.stringify([...found]));
   } catch {
     // Entries remain available in memory for this visit.
   }
-  openJournal();
+  noteSite = near;
+  fieldNote.hidden = false;
+  get('note-title').textContent = near.name;
+  get('note-copy').textContent = near.note;
+  canvas.focus({ preventScroll: true });
+}
+
+function waterTooDeep(x, z) {
+  return ground(x, z) < waterline - 0.31;
+}
+
+function canWalk(x, z) {
+  return !waterTooDeep(x, z) &&
+    !discoveries.some((site) => Math.hypot(site.x - x, site.z - z) < site.footprint);
 }
 
 function move(dt) {
@@ -106,20 +127,25 @@ function move(dt) {
   let moved = false;
   if (forward || side) {
     const running = keys.has('ShiftLeft') || keys.has('ShiftRight');
-    const speed = (running ? 11.5 : 7.1) * dt / Math.hypot(forward, side);
-    const x = THREE.MathUtils.clamp(position.x + (side * Math.cos(yaw) - forward * Math.sin(yaw)) * speed, -65, 69);
-    const z = THREE.MathUtils.clamp(position.z - (side * Math.sin(yaw) + forward * Math.cos(yaw)) * speed, -104, 45);
-    const canWalk = (nextX, nextZ) => ground(nextX, nextZ) >= waterline - 0.31;
-    if (canWalk(x, z)) {
-      moved = x !== position.x || z !== position.z;
-      position.x = x;
-      position.z = z;
-    } else {
-      if (canWalk(x, position.z) && x !== position.x) { position.x = x; moved = true; }
-      if (canWalk(position.x, z) && z !== position.z) { position.z = z; moved = true; }
-      if (!tideWarningShown) {
-        tideWarningShown = true;
-        announce('The water is too deep here. Follow the shore around the basin.');
+    // Bound each collision check while allowing a slow render frame to catch up.
+    const steps = Math.max(1, Math.ceil(dt / 0.04));
+    const speed = (running ? 11.5 : 7.1) * dt / (steps * Math.hypot(forward, side));
+    const stepX = (side * Math.cos(yaw) - forward * Math.sin(yaw)) * speed;
+    const stepZ = -(side * Math.sin(yaw) + forward * Math.cos(yaw)) * speed;
+    for (let step = 0; step < steps; step++) {
+      const x = THREE.MathUtils.clamp(position.x + stepX, -65, 69);
+      const z = THREE.MathUtils.clamp(position.z + stepZ, -104, 45);
+      if (canWalk(x, z)) {
+        moved ||= x !== position.x || z !== position.z;
+        position.x = x;
+        position.z = z;
+      } else {
+        if (canWalk(x, position.z) && x !== position.x) { position.x = x; moved = true; }
+        if (canWalk(position.x, z) && z !== position.z) { position.z = z; moved = true; }
+        if (!tideWarningShown && waterTooDeep(x, z)) {
+          tideWarningShown = true;
+          announce('The water is too deep here. Follow the shore around the basin.');
+        }
       }
     }
   }
@@ -129,9 +155,20 @@ function move(dt) {
   position.y = THREE.MathUtils.damp(position.y, height + bob, 12, dt);
   camera.rotation.set(pitch, yaw, 0, 'YXZ');
 
-  near = discoveries.find((site) => Math.hypot(site.x - position.x, site.z - position.z) < 3.6);
-  inspect.hidden = !near;
-  if (near) inspect.querySelector('span').textContent = `Examine ${near.name}`;
+  if (noteSite && Math.hypot(noteSite.x - position.x, noteSite.z - position.z) > 8) dismissNote();
+  const target = discoveries.find((site) => {
+    const dx = site.x - position.x;
+    const dz = site.z - position.z;
+    const distance = Math.hypot(dx, dz);
+    return distance < 3.6 && (-dx * Math.sin(yaw) - dz * Math.cos(yaw)) > distance * 0.55;
+  });
+  if (target !== near) {
+    near = target;
+    if (near) inspectLabel.textContent = `Examine ${near.name}`;
+  }
+  const examining = Boolean(near && near !== noteSite);
+  inspect.hidden = !examining;
+  reticle.classList.toggle('examining', examining);
   const bearing = Math.round(-yaw / (Math.PI / 4));
   const index = ((bearing % compass.length) + compass.length) % compass.length;
   get('heading-left').textContent = compass[(index + compass.length - 1) % compass.length];
@@ -143,7 +180,7 @@ function move(dt) {
 }
 
 function draw(now) {
-  const dt = lastFrame ? Math.min((now - lastFrame) / 1000, 0.05) : 0;
+  const dt = lastFrame ? Math.min((now - lastFrame) / 1000, 0.16) : 0;
   lastFrame = now;
   if (exploring && !journal.open) move(dt);
   if (!reduceMotion && !journal.open) elapsed += dt;
@@ -180,7 +217,8 @@ get('enter').addEventListener('click', () => {
   get('journal-button').hidden = false;
   canvas.tabIndex = 0;
   canvas.focus({ preventScroll: true });
-  announce(matchMedia('(pointer: coarse)').matches ? 'Drag to look. Hold the arrows to walk.' : 'Walk the path. Drag the scene to look around.');
+  const touch = matchMedia('(pointer: coarse)').matches;
+  announce(touch ? 'Hold the arrows to walk. Drag to look at nearby traces.' : 'Walk the path. Look toward nearby traces to examine them.');
 });
 
 get('journal-button').addEventListener('click', openJournal);
@@ -194,6 +232,10 @@ get('return').addEventListener('click', () => {
 });
 journal.addEventListener('close', () => canvas.focus({ preventScroll: true }));
 inspect.addEventListener('click', examine);
+get('dismiss-note').addEventListener('click', () => {
+  dismissNote();
+  canvas.focus({ preventScroll: true });
+});
 get('sound').addEventListener('click', async () => {
   const button = get('sound');
   button.disabled = true;
@@ -218,6 +260,7 @@ window.addEventListener('keydown', (event) => {
   if (event.repeat) return;
   if (event.code === 'KeyE') examine();
   if (event.code === 'KeyJ') openJournal();
+  if (event.code === 'Escape') dismissNote();
 });
 window.addEventListener('keyup', (event) => keys.delete(event.code));
 window.addEventListener('blur', () => {

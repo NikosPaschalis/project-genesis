@@ -19,7 +19,7 @@
         <span>PROJECT <strong>GENESIS</strong></span>
       </div>
       <div class="top-actions">
-        <button id="journal-button" class="utility" type="button" hidden>Journal <span id="journal-count">0 / 3</span></button>
+        <button id="journal-button" class="utility" type="button" hidden>Journal</button>
         <button id="sound" class="utility sound" type="button" aria-label="Enable ambient sound" aria-pressed="false">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.35" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="muted-mark" d="m16 10 5 5m0-5-5 5"/><path class="volume-mark" d="M16 9a4 4 0 0 1 0 6m2-9a8 8 0 0 1 0 12"/></svg>
           <span>Sound off</span>
@@ -49,9 +49,18 @@
     <footer class="footer">
       <div class="location"><svg class="location-icon" width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="m10 2 8 8-8 8-8-8Z"/><path d="m10 7 3 3-3 3-3-3Z"/></svg><div><span class="label">CURRENT REGION</span><strong id="region">The Quiet Reach</strong></div></div>
       <div id="controls" class="controls"><span><kbd>W A S D</kbd> Move</span><span><kbd>Drag</kbd> Look</span><span><kbd>E</kbd> Examine</span></div>
-      <span class="version">EXPEDITION BUILD <b>0.1.0</b></span>
+      <span class="version">EXPEDITION BUILD <b>0.2.0</b></span>
     </footer>
     <div id="message" role="status" aria-live="polite"></div>
+    <aside id="field-note" aria-label="Field observation" hidden>
+      <button id="dismiss-note" class="utility" type="button" aria-label="Dismiss field observation">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 3 10 10m0-10L3 13"/></svg>
+      </button>
+      <div aria-live="polite" aria-atomic="true">
+        <h2 id="note-title"></h2>
+        <p id="note-copy"></p>
+      </div>
+    </aside>
 
     <dialog id="journal" aria-labelledby="journal-title">
       <div class="dialog-header"><p class="eyebrow"><span></span> THE QUIET REACH</p><button id="close-journal" class="utility" type="button" aria-label="Close field journal"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" aria-hidden="true"><path d="m3 3 10 10m0-10L3 13"/></svg></button></div>

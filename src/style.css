@@ -54,9 +54,23 @@ kbd { font: 500 10px/1.15 "DM Sans", Arial, sans-serif; padding: 4px 6px; border
 .compass i { width: 21px; border-top: 1px solid #f2dbc080; }
 .compass strong { color: var(--brass); min-width: 26px; text-align: center; }
 .reticle { position: absolute; top: 50%; left: 50%; width: 5px; height: 5px; border: 1px solid #fbe5bd; border-radius: 50%; opacity: .85; pointer-events: none; }
+.reticle.examining { background: var(--brass); box-shadow: 0 0 7px #ffddaa88; }
 .inspect { position: absolute; left: 50%; bottom: 115px; transform: translateX(-50%); background: #142021e8; border: 1px solid #e9c89480; padding: 9px 15px; display: flex; gap: 9px; align-items: center; white-space: nowrap; font-size: 12px; }
 #message { position: absolute; left: 50%; top: 143px; transform: translateX(-50%); max-width: 90%; padding: 8px 14px; background: #152025e0; font-size: 12px; text-align: center; pointer-events: none; }
 #message:empty, .touch-controls { display: none; }
+#field-note {
+  position: absolute;
+  left: clamp(22px, 4.4vw, 72px);
+  bottom: 100px;
+  width: min(275px, calc(100% - 44px));
+  padding: 14px 36px 14px 16px;
+  background: #182426ee;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--brass);
+}
+#field-note h2 { margin: 0 0 5px; font: 400 25px/1 var(--serif); color: var(--brass); }
+#field-note p { margin: 0; color: var(--paper); font-size: 12px; line-height: 1.55; }
+#dismiss-note { position: absolute; top: 7px; right: 7px; padding: 6px; }
 dialog { background: #1b2629; color: var(--paper); border: 1px solid #e9c89466; padding: clamp(22px, 5vw, 40px); width: min(500px, calc(100% - 30px)); max-height: min(80vh, 650px); overflow: auto; }
 dialog::backdrop { background: #0c1419b5; backdrop-filter: blur(6px); }
 .dialog-header { display: flex; gap: 12px; align-items: center; justify-content: space-between; }
@@ -76,9 +90,11 @@ dialog h2, #fallback h2 { margin: 14px 0 7px; font: 400 50px/.95 var(--serif); }
   .controls { display: none; }
   .compass { top: 82px; }
   #message { top: 105px; }
+  #field-note { top: 145px; bottom: auto; }
 }
 @media (pointer: coarse) {
   .controls { display: none; }
+  #field-note { top: 165px; bottom: auto; }
   .touch-controls { display: grid; position: absolute; left: 22px; bottom: 87px; grid-template-columns: repeat(3, 39px); grid-auto-rows: 39px; gap: 4px; touch-action: none; }
   .touch-controls button { border: 1px solid var(--line); border-radius: 3px; background: #172125a1; }
   .touch-controls button:first-child { grid-area: 1 / 2; }

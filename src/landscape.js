@@ -5,15 +5,15 @@ export const waterline = -0.55;
 
 export const discoveries = [
   {
-    id: 'threshold', name: 'The Leaning Stone', x: -18, z: 22,
+    id: 'threshold', name: 'The Leaning Stone', x: -18, z: 22, footprint: 0.98,
     note: 'Three grooves turn toward the basin. Rain has softened two of them. The third still looks freshly cut.',
   },
   {
-    id: 'landing', name: 'The Boatless Landing', x: -18, z: -21,
+    id: 'landing', name: 'The Boatless Landing', x: -20.5, z: -21, footprint: 0.51,
     note: 'A mooring ring is polished on its landward edge. Someone used to tie something here, on the wrong side of the water.',
   },
   {
-    id: 'crown', name: 'The Listening Crown', x: 36, z: -48,
+    id: 'crown', name: 'The Listening Crown', x: 36, z: -48, footprint: 0.56,
     note: 'The stone holds the day’s warmth. Pressing a palm to it, you feel three pulses and a silence long enough to mistake for an answer.',
   },
 ];
@@ -309,11 +309,11 @@ function makeRuins(scene) {
   ));
   const metal = new THREE.MeshStandardMaterial({ color: '#9a7b53', metalness: 0.45, roughness: 0.42 });
   const light = new THREE.MeshBasicMaterial({ color: '#ffd18b' });
-  const marker = new THREE.MeshBasicMaterial({ color: '#ffd99e', wireframe: true, transparent: true, opacity: 0.84 });
+  const wornMetal = new THREE.MeshStandardMaterial({ color: '#65523c', roughness: 0.83 });
+  const freshMetal = new THREE.MeshStandardMaterial({ color: '#dba064', roughness: 0.48, emissive: '#442719', emissiveIntensity: 0.28 });
   const box = new THREE.BoxGeometry();
   const pillar = new THREE.CylinderGeometry(0.86, 1, 1, 5);
   const shard = new THREE.IcosahedronGeometry(1, 0);
-  const signals = [];
 
   function object(geometry, material, x, y, z, sx, sy, sz, yaw = 0, tilt = 0) {
     const mesh = new THREE.Mesh(geometry, material);
@@ -326,11 +326,6 @@ function makeRuins(scene) {
 
   function panel(x, bottom, z, sx, sy, sz, yaw = 0, tone = 0) {
     return object(box, stone[tone], x, bottom + sy / 2, z, sx, sy, sz, yaw);
-  }
-
-  function signal(x, z, height, tone = marker) {
-    const mesh = object(new THREE.OctahedronGeometry(0.24), tone, x, height, z, 1, 1.65, 1);
-    signals.push({ mesh, height });
   }
 
   const ringX = 35;
@@ -393,7 +388,9 @@ function makeRuins(scene) {
   const crownSite = discoveries[2];
   const crownY = ground(crownSite.x, crownSite.z);
   panel(crownSite.x, crownY - 0.08, crownSite.z, 0.62, 1.35, 0.47, -0.33, 0);
-  signal(crownSite.x, crownSite.z, crownY + 1.85);
+  for (let i = 0; i < 3; i++) {
+    object(box, i === 2 ? freshMetal : wornMetal, crownSite.x - 0.15 + i * 0.14, crownY + 0.81, crownSite.z + 0.24, 0.038, 0.22, 0.026, -0.33, -0.17);
+  }
   // Weathered stair fragments lead toward the foot of the monument.
   for (let i = 0; i < 7; i++) {
     const x = 33.6 - (i - 3) * 0.11;
@@ -406,21 +403,22 @@ function makeRuins(scene) {
   object(pillar, stone[0], threshold.x, y + 1.04, threshold.z, 0.77, 2.7, 0.48, 0.27, -0.17);
   panel(threshold.x + 0.58, y - 0.13, threshold.z + 0.34, 1.80, 0.31, 1.3, 0.26, 2);
   for (let i = 0; i < 3; i++) {
-    object(box, metal, threshold.x + 0.09 + i * 0.16, y + 1.25 + i * 0.13, threshold.z + 0.48, 0.025, 0.45, 0.024, 0.14, -0.40);
+    object(box, i === 2 ? freshMetal : wornMetal, threshold.x + 0.09 + i * 0.16, y + 1.25 + i * 0.13, threshold.z + 0.49, 0.042 - i * 0.005, 0.45, 0.024, 0.14, -0.40);
   }
-  signal(threshold.x, threshold.z, y + 2.82);
 
   const landing = discoveries[1];
   const dockY = ground(landing.x, landing.z);
-  for (let i = 0; i < 7; i++) {
-    const x = landing.x + i * 0.91;
-    panel(x, dockY - i * 0.24 - 0.47, landing.z + 0.1 * Math.sin(i), 0.86, 0.50, 2.36, i * 0.035, i % 3);
+  for (let i = 0; i < 8; i++) {
+    const x = landing.x + (i - 4) * 0.88;
+    const top = ground(x, landing.z) + 0.15;
+    panel(x, top - 0.55, landing.z + 0.1 * Math.sin(i), 0.94, 0.55, 2.8 - i * 0.095, i * 0.035, i % 3);
   }
-  object(pillar, stone[1], landing.x, dockY + 0.31, landing.z, 0.39, 1.1, 0.39, 0.6);
-  object(new THREE.TorusGeometry(0.17, 0.035, 5, 9), metal, landing.x, dockY + 0.66, landing.z + 0.31, 1, 1, 1);
-  signal(landing.x, landing.z, dockY + 1.32);
+  object(pillar, stone[1], landing.x, dockY + 0.53, landing.z, 0.39, 1.3, 0.39, 0.6);
+  object(new THREE.TorusGeometry(0.23, 0.047, 5, 11), freshMetal,
+    landing.x - 0.29, dockY + 0.85, landing.z + 0.19, 1, 1, 1, -0.98);
+  object(pillar, stone[0], landing.x + 1.65, ground(landing.x + 1.65, landing.z) + 0.38, landing.z - 0.9, 0.27, 1.4, 0.27, 0.7, 0.18);
 
-  for (const [x, z] of [[-19, -39], [-16, -53], [-7, -57], [3, -59], [14, -58], [25, -54]]) {
+  for (const [x, z] of [[-21, -28], [-20, -39], [-16, -53], [-7, -57], [3, -59], [14, -58], [25, -54]]) {
     const y = ground(x, z);
     object(shard, stone[2], x, y + 0.18, z, 0.59, 0.45, 0.55, 0.52);
     object(shard, stone[4], x - 0.05, y + 0.61, z, 0.38, 0.26, 0.34, 0.85);
@@ -439,7 +437,7 @@ function makeRuins(scene) {
     object(pillar, stone[0], x, y + height / 2, z, 0.69, height, 0.61, tilt * 3, tilt);
   }
 
-  return { signals, pendant };
+  return pendant;
 }
 
 function makeDrift(scene) {
@@ -474,7 +472,7 @@ export function landscape(scene) {
   makeTerrain(scene);
   const time = makeWater(scene);
   makePlants(scene);
-  const { signals, pendant } = makeRuins(scene);
+  const pendant = makeRuins(scene);
   const drift = makeDrift(scene);
 
   return (elapsed, position) => {
@@ -483,9 +481,5 @@ export function landscape(scene) {
     drift.position.set(Math.sin(elapsed * 0.17) * 1.5, Math.sin(elapsed * 0.4) * 0.5, 0);
     pendant.rotation.y = elapsed * 0.16;
     pendant.position.y = 10.72 + Math.sin(elapsed * 0.72) * 0.38;
-    signals.forEach(({ mesh, height }, i) => {
-      mesh.rotation.y = elapsed * 0.8 + i;
-      mesh.position.y = height + Math.sin(elapsed * 1.7 + i) * 0.13;
-    });
   };
 }

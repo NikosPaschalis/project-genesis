@@ -18,9 +18,9 @@ Open the local address printed by Vite. For production, run `npm run build` and 
 | W A S D | Walk |
 | Drag or Left / Right arrow | Look |
 | Shift | Move faster |
-| E or tap the prompt | Examine a nearby site |
+| E or tap the prompt | Examine a nearby site you are facing |
 | J or Journal | Open field journal |
-| Esc | Close field journal |
+| Esc | Dismiss the field note or close the journal |
 | Touch directional pad | Walk on a touch screen |
 
 Sound is opt-in. The journal stays in the current browser profile when storage is available. Use **Return to overlook** in the journal to reset your position.
@@ -34,8 +34,10 @@ CHROMIUM_PATH=/path/to/chromium npm run test:browser
 
 The browser check starts its own local server, walks the desktop route, verifies journal persistence, and checks the first interaction with touch controls. Set `GENESIS_CAPTURE_DIR` to capture the opening at two viewport sizes.
 
-## 0.1.0
+## 0.2.0
 
-First playable release. It includes a low-poly basin, a single-player route with three inspectable sites, a local field journal, and optional ambient sound. This build supports walking along the terrain. Scenery meshes such as trees and ruin blocks can be walked through. Device performance varies with WebGL support and available graphics acceleration.
+Field observations now appear alongside the landscape, with the full journal available separately. Look toward a nearby trace to examine it. The revision replaces floating markers with details on the objects themselves and adds physical cues along the shore. The three observation props block movement. Other scenery, including trees and larger ruins, can still be walked through. Device performance varies with WebGL support and graphics acceleration.
+
+Version 0.1.0 is the original expedition checkpoint.
 
 Read [the constitution](CONSTITUTION.md) and [founder amendments](CONSTITUTION-AMENDMENTS.md) for the governing principles. Read [the memory index](memory/index.md) for project continuity and evidence.
