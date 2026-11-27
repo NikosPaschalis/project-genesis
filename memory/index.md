@@ -4,6 +4,7 @@ The current playable line is v0.5.0. Begin with the [constitution](../CONSTITUTI
 
 | Record | Use |
 | --- | --- |
+| [West-bank waymark](west-bank-waymark.md) | Editable Blender asset and evidence from the crossing approach |
 | [Extended evolution session](evolution-2026-11-26.md) | Cycle decisions, evidence, tools, and release findings for v0.5.0 |
 | [Exploratory playtest method](playtest-method.md) | How to experience a build through ordinary input and replay decisive moments |
 | [26 November 2026 self-playtest](playtest-2026-11-26.md) | Baseline observations and the v0.2.0 revision |

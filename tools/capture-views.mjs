@@ -4,7 +4,7 @@ import { chromium } from 'playwright-core';
 import { createServer } from 'vite';
 
 const [source, output, routeName, mode] = process.argv.slice(2);
-if (!source || !output) throw new Error('Usage: node tools/capture-views.mjs <checkout> <output directory> [east|sight] [stats]');
+if (!source || !output) throw new Error('Usage: node tools/capture-views.mjs <checkout> <output directory> [east|sight|crossing] [stats]');
 const eastViews = [
   { name: 'crown-descent', x: 35.5, z: -42, yaw: 2.86, pitch: -0.14 },
   { name: 'reed-bend', x: 25, z: -24, yaw: 2.86, pitch: -0.12 },
@@ -17,7 +17,14 @@ const sightViews = [
   { name: 'joined', x: 44.7, z: -10.2, yaw: Math.PI / 2, pitch: 0.041 },
   { name: 'separated', x: 44.7, z: -11.35, yaw: 1.49, pitch: 0.041 },
 ];
-const views = routeName === 'east' ? eastViews : routeName === 'sight' ? sightViews : [
+const crossingViews = [
+  { name: 'trail-fork', x: -19.9, z: 20.2, yaw: -0.47, pitch: -0.11 },
+  { name: 'turn-to-crossing', x: -15.9, z: 15.8, yaw: -1.02, pitch: -0.13 },
+  { name: 'return-from-deck', x: -8, z: 12, yaw: 1.7, pitch: -0.13 },
+  { name: 'waymark-detail', x: -16.75, z: 12.5, yaw: -0.58, pitch: -0.1 },
+];
+const viewGroups = { east: eastViews, sight: sightViews, crossing: crossingViews };
+const views = viewGroups[routeName] ?? [
   { name: 'fork', x: -21.2, z: -27.8, yaw: 0.37, pitch: -0.12 },
   { name: 'approach', x: -25.7, z: -39.0, yaw: 0.12, pitch: -0.11 },
   { name: 'return-view', x: -24.5, z: -46.0, yaw: -2.05, pitch: -0.10 },

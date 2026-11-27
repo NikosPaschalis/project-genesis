@@ -1,8 +1,17 @@
 import * as THREE from 'three';
-import { crossing, deckHeight } from './geography.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import waymarkUrl from './assets/west-bank-waymark.glb?url&no-inline';
+import { crossing, deckHeight, ground, westBankWaymark } from './geography.js';
 
 export function makeCrossing(scene) {
   const { west, east, z, halfWidth } = crossing;
+  new GLTFLoader().loadAsync(waymarkUrl).then(({ scene: waymark }) => {
+    const { x, z, yaw } = westBankWaymark;
+    waymark.position.set(x, ground(x, z), z);
+    waymark.rotation.y = yaw;
+    scene.add(waymark);
+  }).catch(error => console.warn('Could not load the west-bank waymark', error));
+
   const timber = new THREE.MeshStandardMaterial({ roughness: 0.91 });
   const stone = new THREE.MeshStandardMaterial({ color: '#4f5751', roughness: 1, flatShading: true });
   const box = new THREE.BoxGeometry();

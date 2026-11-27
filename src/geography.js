@@ -105,6 +105,7 @@ function inMeasureWall(x, z) {
 }
 
 export const crossing = { west: -12, east: 26, z: 12, halfWidth: 1.55 };
+export const westBankWaymark = { x: crossing.west - 3.2, z: crossing.z - 1.85, yaw: -0.57 };
 
 export function deckHeight(x) {
   const t = (x - crossing.west) / (crossing.east - crossing.west);
