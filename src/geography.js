@@ -106,6 +106,21 @@ function inMeasureWall(x, z) {
 
 export const crossing = { west: -12, east: 26, z: 12, halfWidth: 1.55 };
 export const westBankWaymark = { x: crossing.west - 3.2, z: crossing.z - 1.85, yaw: -0.57 };
+export const eastBankRepair = {
+  trestle: { x: 28.5, z: 15.35, yaw: 0.47, halfWidth: 0.5, halfLength: 0.87 },
+  rail: { x: 27.1, z: 16.12, yaw: 0.22, halfWidth: 0.30, halfLength: 1.07, embed: 0.075 },
+};
+
+export function nearEastBankRepair(x, z, margin = 0) {
+  return Object.values(eastBankRepair).some(({ x: cx, z: cz, yaw, halfWidth, halfLength }) => {
+    const dx = x - cx;
+    const dz = z - cz;
+    const cos = Math.cos(yaw);
+    const sin = Math.sin(yaw);
+    return Math.abs(dx * cos - dz * sin) < halfWidth + margin &&
+      Math.abs(dx * sin + dz * cos) < halfLength + margin;
+  });
+}
 
 export function deckHeight(x) {
   const t = (x - crossing.west) / (crossing.east - crossing.west);
@@ -131,6 +146,6 @@ export function waterTooDeep(x, z) {
 
 export function canWalk(x, z) {
   return x >= bounds.minX && x <= bounds.maxX && z >= bounds.minZ && z <= bounds.maxZ &&
-    !waterTooDeep(x, z) && !inMeasureWall(x, z) &&
+    !waterTooDeep(x, z) && !inMeasureWall(x, z) && !nearEastBankRepair(x, z, 0.16) &&
     !discoveries.some((site) => Math.hypot(site.x - x, site.z - z) < site.footprint);
 }

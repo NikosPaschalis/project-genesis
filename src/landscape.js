@@ -3,7 +3,7 @@ import { makeCrossing } from './crossing.js';
 import { makeMeasureHouse } from './measure-house.js';
 import { makeReeds } from './reeds.js';
 
-import { discoveries, ground, measureHouse, reedStairDistance, shorePath, spurDistance, trailDistance, waterline, westBankWaymark } from './geography.js';
+import { discoveries, ground, measureHouse, nearEastBankRepair, reedStairDistance, shorePath, spurDistance, trailDistance, waterline, westBankWaymark } from './geography.js';
 
 function generator(seed) {
   return () => {
@@ -242,7 +242,7 @@ function makePlants(scene) {
   const grassPatches = new Map();
   for (const tuft of grass) {
     const { x, z, sy } = tuft;
-    if (houseAisle(x, z, 1.75)) continue;
+    if (houseAisle(x, z, 1.75) || nearEastBankRepair(x, z, 0.35)) continue;
     if (sy >= 0.29 && Math.min(spurDistance(x, z), reedStairDistance(x, z)) <= 1.25) continue;
     const tile = `${Math.floor(x / 18)},${Math.floor(z / 18)}`;
     if (!grassPatches.has(tile)) grassPatches.set(tile, []);
@@ -261,6 +261,7 @@ function makePlants(scene) {
     rocks.push({ x, y, z, sx: size * 1.3, sy: size * (0.35 + random() * 0.65), sz: size, rotation: random() * 6, color: pick(rockColors) });
   }
   instancer(scene, new THREE.IcosahedronGeometry(1, 0), new THREE.MeshStandardMaterial({ flatShading: true }), rocks.filter(({ x, z, sx }) => !houseAisle(x, z, 1.8 + sx) &&
+    !nearEastBankRepair(x, z, sx) &&
     Math.hypot(x - westBankWaymark.x, z - westBankWaymark.z) > 0.9 + sx &&
     Math.min(spurDistance(x, z), reedStairDistance(x, z)) > Math.max(2.1, 1.15 + sx * 0.9)));
 

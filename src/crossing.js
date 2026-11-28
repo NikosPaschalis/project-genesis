@@ -1,16 +1,32 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import trestleUrl from './assets/east-bank-repair-trestle.glb?url&no-inline';
+import railUrl from './assets/east-bank-spare-rail.glb?url&no-inline';
 import waymarkUrl from './assets/west-bank-waymark.glb?url&no-inline';
-import { crossing, deckHeight, ground, westBankWaymark } from './geography.js';
+import { crossing, deckHeight, eastBankRepair, ground, westBankWaymark } from './geography.js';
 
 export function makeCrossing(scene) {
   const { west, east, z, halfWidth } = crossing;
-  new GLTFLoader().loadAsync(waymarkUrl).then(({ scene: waymark }) => {
+  const loader = new GLTFLoader();
+  loader.loadAsync(waymarkUrl).then(({ scene: waymark }) => {
     const { x, z, yaw } = westBankWaymark;
     waymark.position.set(x, ground(x, z), z);
     waymark.rotation.y = yaw;
     scene.add(waymark);
   }).catch(error => console.warn('Could not load the west-bank waymark', error));
+
+  for (const [url, { x, z, yaw, halfLength, embed = 0 }] of [
+    [trestleUrl, eastBankRepair.trestle], [railUrl, eastBankRepair.rail],
+  ]) {
+    const dx = Math.sin(yaw) * halfLength;
+    const dz = Math.cos(yaw) * halfLength;
+    const rise = ground(x + dx, z + dz) - ground(x - dx, z - dz);
+    loader.loadAsync(url).then(({ scene: asset }) => {
+      asset.position.set(x, ground(x, z) - embed, z);
+      asset.rotation.set(-Math.atan2(rise, 2 * halfLength), yaw, 0, 'YXZ');
+      scene.add(asset);
+    }).catch(error => console.warn('Could not load an east-bank repair asset', error));
+  }
 
   const timber = new THREE.MeshStandardMaterial({ roughness: 0.91 });
   const stone = new THREE.MeshStandardMaterial({ color: '#4f5751', roughness: 1, flatShading: true });
